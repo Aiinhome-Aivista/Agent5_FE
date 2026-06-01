@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   X,
@@ -41,6 +41,20 @@ export default function RunbookUploadModal({
   const [runbookSaving, setRunbookSaving] = useState(false);
 
   const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const mainEl = document.getElementById("main-scroll");
+    if (!mainEl) return;
+    
+    if (open) {
+      mainEl.style.overflow = "hidden";
+    } else {
+      mainEl.style.overflow = "auto";
+    }
+    return () => {
+      mainEl.style.overflow = "auto";
+    };
+  }, [open]);
 
   function reset() {
     setPhase("pick");

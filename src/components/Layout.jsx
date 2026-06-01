@@ -169,7 +169,7 @@ export default function Layout() {
           </div>
         </header>
 
-        <main className="flex-1 min-w-0 overflow-y-auto p-6 animate-fade-up">
+        <main id="main-scroll" className="flex-1 min-w-0 overflow-y-auto p-6 animate-fade-up">
           <Outlet />
         </main>
       </div>
