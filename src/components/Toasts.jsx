@@ -40,7 +40,7 @@ export default function Toasts() {
               cls,
             )}
           >
-            <Icon className="w-4 h-4 mt-0.5 flex-shrink-0" />
+            <Icon className="w-4 h-4 mt-0.5 flex-shrink-0 text-ink-700" />
             <div className="text-sm flex-1 text-ink-700">{t.message}</div>
             <button
               onClick={() => dismissToast(t.id)}
