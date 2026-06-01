@@ -27,8 +27,8 @@ const EMPTY_RULE = {
   title: "",
   content: "",
   provider: "any",
-  resource_type: "any",
-  category: "custom",
+  resource_type: "Any",
+  category: "Custom",
   status: "draft",
 };
 
@@ -40,14 +40,14 @@ function RuleEditor({ value, onChange }) {
         value={value.title}
         onChange={set("title")}
         placeholder="Rule title (e.g. Azure VM right-sizing)"
-        className="w-full px-3 py-2 border border-paper-300 rounded-lg text-sm bg-paper-100 focus:bg-white focus:outline-none focus:border-accent-500"
+        className="w-full px-3 py-2 border border-paper-300 rounded-lg text-sm text-gray-700 bg-paper-100 focus:bg-white focus:outline-none focus:border-accent-500"
       />
       <textarea
         rows={5}
         value={value.content}
         onChange={set("content")}
         placeholder="Rule content: detection thresholds, recommended action, risk, expected savings (USD), scale-up/down guidance, rollback…"
-        className="w-full px-3 py-2 border border-paper-300 rounded-lg text-sm bg-paper-100 focus:bg-white focus:outline-none focus:border-accent-500 resize-none"
+        className="w-full px-3 py-2 border border-paper-300 rounded-lg text-sm text-gray-700 bg-paper-100 focus:bg-white focus:outline-none focus:border-accent-500 resize-none"
       />
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
         <div>
@@ -57,9 +57,9 @@ function RuleEditor({ value, onChange }) {
           <select
             value={value.provider}
             onChange={set("provider")}
-            className="w-full px-3 py-2 border border-paper-300 rounded-lg text-sm bg-paper-100 focus:bg-white focus:outline-none"
+            className="w-full px-3 py-2 border border-paper-300 rounded-lg text-sm text-gray-700 bg-paper-100 focus:bg-white focus:outline-none"
           >
-            {["any", "aws", "azure", "gcp"].map((p) => (
+            {["Any", "AWS", "Azure", "GCP"].map((p) => (
               <option key={p} value={p}>
                 {p}
               </option>
@@ -74,7 +74,7 @@ function RuleEditor({ value, onChange }) {
             value={value.resource_type}
             onChange={set("resource_type")}
             placeholder="vm, sql_db, ec2…"
-            className="w-full px-3 py-2 border border-paper-300 rounded-lg text-sm bg-paper-100 focus:bg-white focus:outline-none"
+            className="w-full px-3 py-2 border border-paper-300 rounded-lg text-sm text-gray-700 bg-paper-100 focus:bg-white focus:outline-none"
           />
         </div>
         <div>
@@ -85,7 +85,7 @@ function RuleEditor({ value, onChange }) {
             value={value.category}
             onChange={set("category")}
             placeholder="right_sizing, idle_resource…"
-            className="w-full px-3 py-2 border border-paper-300 rounded-lg text-sm bg-paper-100 focus:bg-white focus:outline-none"
+            className="w-full px-3 py-2 border border-paper-300 rounded-lg text-sm text-gray-700 bg-paper-100 focus:bg-white focus:outline-none"
           />
         </div>
       </div>
@@ -112,7 +112,7 @@ export default function Rulebook() {
       const params = statusFilter !== "all" ? { status: statusFilter } : {};
       const [{ data }, vc] = await Promise.all([
         endpoints.rules(params),
-        endpoints.vectorCounts().catch(() => ({ data: null }))
+        endpoints.vectorCounts().catch(() => ({ data: null })),
       ]);
       setRules(data.rules || []);
       setVectorCounts(vc?.data || null);
@@ -203,7 +203,8 @@ export default function Rulebook() {
         ...newRule,
         status: approveNow ? "approved" : "draft",
       });
-      if (approveNow && data?.id) await endpoints.approveRule(data.id, "ui-user");
+      if (approveNow && data?.id)
+        await endpoints.approveRule(data.id, "ui-user");
       pushToast({ type: "success", message: "Rule added" });
       setAdding(false);
       setNewRule(EMPTY_RULE);
@@ -256,7 +257,10 @@ export default function Rulebook() {
         subtitle="Live knowledge base the agents reason over. Approve, edit, or add rules on the fly."
         action={
           <div className="flex gap-2">
-            <button onClick={openRunbook} className="btn-primary bg-emerald-600 hover:bg-emerald-700 text-white border-transparent">
+            <button
+              onClick={openRunbook}
+              className="btn-primary bg-emerald-600 hover:bg-emerald-700 text-white border-transparent"
+            >
               <PlusCircle className="w-3.5 h-3.5" />
               Upload Runbook
             </button>
@@ -269,179 +273,183 @@ export default function Rulebook() {
           </div>
         }
       >
-      {/* Filters */}
-      <div className="flex gap-2 mb-4">
-        {["all", "draft", "approved"].map((s) => (
-          <button
-            key={s}
-            onClick={() => setStatusFilter(s)}
-            className={clsx(
-              "px-3 py-1.5 rounded-md text-xs font-medium uppercase tracking-wider border transition-colors",
-              statusFilter === s
-                ? "bg-accent-50 text-accent-700 border-accent-300"
-                : "border-paper-300 text-ink-500 hover:text-ink-800 hover:border-paper-400",
-            )}
-          >
-            {s}
-          </button>
-        ))}
-      </div>
-
-      {/* Add form */}
-      {adding && (
-        <div className="card p-4 mb-4 space-y-3 border-accent-300">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold text-ink-900">New rule</h3>
+        {/* Filters */}
+        <div className="flex gap-2 mb-4">
+          {["all", "draft", "approved"].map((s) => (
             <button
-              onClick={() => {
-                setAdding(false);
-                setNewRule(EMPTY_RULE);
-              }}
-              className="text-ink-400 hover:text-ink-700"
+              key={s}
+              onClick={() => setStatusFilter(s)}
+              className={clsx(
+                "px-3 py-1.5 rounded-md text-xs font-medium uppercase tracking-wider border transition-colors",
+                statusFilter === s
+                  ? "bg-accent-50 text-accent-700 border-accent-300"
+                  : "border-paper-300 text-ink-500 hover:text-ink-800 hover:border-paper-400",
+              )}
             >
-              <X className="w-4 h-4" />
+              {s}
             </button>
-          </div>
-          <RuleEditor value={newRule} onChange={setNewRule} />
-          <div className="flex gap-2 justify-end">
-            <button
-              onClick={() => saveNew(false)}
-              disabled={busy._new}
-              className="btn-ghost"
-            >
-              {busy._new ? <Spinner /> : <Save className="w-3.5 h-3.5" />}
-              Save as draft
-            </button>
-            <button
-              onClick={() => saveNew(true)}
-              disabled={busy._new}
-              className="btn-primary"
-            >
-              {busy._new ? <Spinner /> : <CheckCircle2 className="w-3.5 h-3.5" />}
-              Save & approve
-            </button>
-          </div>
+          ))}
         </div>
-      )}
 
-      {loading ? (
-        <LoadingBlock />
-      ) : rules.length === 0 ? (
-        <EmptyState
-          icon={BookOpen}
-          title="No rules yet"
-          description="Add a rule or seed the playbooks from Settings to populate the knowledge base."
-        />
-      ) : (
-        <div className="space-y-2.5">
-          {rules.map((r) => {
-            const isEditing = editId === r.id;
-            return (
-              <div key={r.id} className="card px-4 py-3.5">
-                {isEditing ? (
-                  <div className="space-y-3">
-                    <RuleEditor value={draft} onChange={setDraft} />
-                    <div className="flex gap-2 justify-end">
-                      <button
-                        onClick={() => setEditId(null)}
-                        className="btn-ghost"
-                      >
-                        <X className="w-3.5 h-3.5" />
-                        Cancel
-                      </button>
-                      <button
-                        onClick={() => saveEdit(r.id)}
-                        disabled={busy[r.id] === "save"}
-                        className="btn-primary"
-                      >
-                        {busy[r.id] === "save" ? (
-                          <Spinner />
-                        ) : (
-                          <Save className="w-3.5 h-3.5" />
-                        )}
-                        Save
-                      </button>
-                    </div>
-                  </div>
+        {/* Add form */}
+        {adding && (
+          <div className="card p-4 mb-4 space-y-3 border-accent-300">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-semibold text-ink-900">New rule</h3>
+              <button
+                onClick={() => {
+                  setAdding(false);
+                  setNewRule(EMPTY_RULE);
+                }}
+                className="text-ink-400 hover:text-ink-700"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <RuleEditor value={newRule} onChange={setNewRule} />
+            <div className="flex gap-2 justify-end">
+              <button
+                onClick={() => saveNew(false)}
+                disabled={busy._new}
+                className="btn-ghost"
+              >
+                {busy._new ? <Spinner /> : <Save className="w-3.5 h-3.5" />}
+                Save as draft
+              </button>
+              <button
+                onClick={() => saveNew(true)}
+                disabled={busy._new}
+                className="btn-primary"
+              >
+                {busy._new ? (
+                  <Spinner />
                 ) : (
-                  <>
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <ProviderBadge provider={r.provider} />
-                          <span
-                            className={clsx(
-                              "px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider",
-                              r.status === "approved"
-                                ? "bg-emerald-50 text-emerald-700"
-                                : "bg-gold-50 text-gold-700 border border-gold-300",
-                            )}
-                          >
-                            {r.status}
-                          </span>
-                          <span className="text-[10px] font-mono text-ink-400 uppercase tracking-wider">
-                            {r.category} · {r.resource_type}
-                          </span>
-                        </div>
-                        <div className="text-sm text-ink-900 font-medium mt-1.5">
-                          {r.title}
-                        </div>
-                        <p className="text-[12px] text-ink-500 mt-1 leading-relaxed line-clamp-3">
-                          {r.content}
-                        </p>
-                      </div>
-                      <div className="flex items-center gap-1.5 shrink-0">
-                        {r.status !== "approved" && (
-                          <button
-                            onClick={() => approve(r.id)}
-                            disabled={!!busy[r.id]}
-                            className="p-1.5 rounded-md text-emerald-600 hover:bg-emerald-50"
-                            title="Approve"
-                          >
-                            {busy[r.id] === "approve" ? (
-                              <Spinner />
-                            ) : (
-                              <Check className="w-4 h-4" />
-                            )}
-                          </button>
-                        )}
+                  <CheckCircle2 className="w-3.5 h-3.5" />
+                )}
+                Save & approve
+              </button>
+            </div>
+          </div>
+        )}
+
+        {loading ? (
+          <LoadingBlock />
+        ) : rules.length === 0 ? (
+          <EmptyState
+            icon={BookOpen}
+            title="No rules yet"
+            description="Add a rule or seed the playbooks from Settings to populate the knowledge base."
+          />
+        ) : (
+          <div className="space-y-2.5">
+            {rules.map((r) => {
+              const isEditing = editId === r.id;
+              return (
+                <div key={r.id} className="card px-4 py-3.5">
+                  {isEditing ? (
+                    <div className="space-y-3">
+                      <RuleEditor value={draft} onChange={setDraft} />
+                      <div className="flex gap-2 justify-end">
                         <button
-                          onClick={() => startEdit(r)}
-                          className="p-1.5 rounded-md text-ink-500 hover:bg-paper-200"
-                          title="Edit"
+                          onClick={() => setEditId(null)}
+                          className="btn-ghost"
                         >
-                          <Pencil className="w-4 h-4" />
+                          <X className="w-3.5 h-3.5" />
+                          Cancel
                         </button>
                         <button
-                          onClick={() => remove(r.id)}
-                          disabled={!!busy[r.id]}
-                          className="p-1.5 rounded-md text-rose-500 hover:bg-rose-50"
-                          title="Delete"
+                          onClick={() => saveEdit(r.id)}
+                          disabled={busy[r.id] === "save"}
+                          className="btn-primary"
                         >
-                          {busy[r.id] === "delete" ? (
+                          {busy[r.id] === "save" ? (
                             <Spinner />
                           ) : (
-                            <Trash2 className="w-4 h-4" />
+                            <Save className="w-3.5 h-3.5" />
                           )}
+                          Save
                         </button>
                       </div>
                     </div>
-                  </>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      )}
-    </Section>
-    <RunbookUploadModal
-      open={runbookOpen}
-      onClose={closeRunbook}
-      onSaved={() => {
-        console.log("saved");
-      }}
-      pushToast={pushToast}
-    />
+                  ) : (
+                    <>
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <ProviderBadge provider={r.provider} />
+                            <span
+                              className={clsx(
+                                "px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider",
+                                r.status === "approved"
+                                  ? "bg-emerald-50 text-emerald-700"
+                                  : "bg-gold-50 text-gold-700 border border-gold-300",
+                              )}
+                            >
+                              {r.status}
+                            </span>
+                            <span className="text-[10px] font-mono text-ink-400 uppercase tracking-wider">
+                              {r.category} · {r.resource_type}
+                            </span>
+                          </div>
+                          <div className="text-sm text-ink-900 font-medium mt-1.5">
+                            {r.title}
+                          </div>
+                          <p className="text-[12px] text-ink-500 mt-1 leading-relaxed line-clamp-3">
+                            {r.content}
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          {r.status !== "approved" && (
+                            <button
+                              onClick={() => approve(r.id)}
+                              disabled={!!busy[r.id]}
+                              className="p-1.5 rounded-md text-emerald-600 hover:bg-emerald-50"
+                              title="Approve"
+                            >
+                              {busy[r.id] === "approve" ? (
+                                <Spinner />
+                              ) : (
+                                <Check className="w-4 h-4" />
+                              )}
+                            </button>
+                          )}
+                          <button
+                            onClick={() => startEdit(r)}
+                            className="p-1.5 rounded-md text-ink-500 hover:bg-paper-200"
+                            title="Edit"
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </button>
+                          <button
+                            onClick={() => remove(r.id)}
+                            disabled={!!busy[r.id]}
+                            className="p-1.5 rounded-md text-rose-500 hover:bg-rose-50"
+                            title="Delete"
+                          >
+                            {busy[r.id] === "delete" ? (
+                              <Spinner />
+                            ) : (
+                              <Trash2 className="w-4 h-4" />
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    </>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </Section>
+      <RunbookUploadModal
+        open={runbookOpen}
+        onClose={closeRunbook}
+        onSaved={() => {
+          console.log("saved");
+        }}
+        pushToast={pushToast}
+      />
     </div>
   );
 }
