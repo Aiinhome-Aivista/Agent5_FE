@@ -259,7 +259,7 @@ export default function Rulebook() {
           <div className="flex gap-2">
             <button
               onClick={openRunbook}
-              className="btn-primary bg-emerald-600 hover:bg-emerald-700 text-white border-transparent"
+              className="btn-primary text-white border-transparent"
             >
               <PlusCircle className="w-3.5 h-3.5" />
               Upload Runbook
