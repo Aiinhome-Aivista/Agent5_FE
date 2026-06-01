@@ -1,0 +1,141 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------- base ---------- */
+html,
+body,
+#root {
+  height: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+body {
+  @apply bg-paper-100 text-ink-700 font-sans antialiased;
+  background-image:
+    radial-gradient(
+      circle at 0% 0%,
+      rgba(20, 184, 166, 0.04) 0%,
+      transparent 40%
+    ),
+    radial-gradient(
+      circle at 100% 100%,
+      rgba(139, 92, 246, 0.03) 0%,
+      transparent 40%
+    );
+  background-attachment: fixed;
+}
+
+::selection {
+  @apply bg-accent-100 text-accent-700;
+}
+
+/* ---------- scrollbar ---------- */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-paper-300 rounded-full;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-paper-400;
+}
+
+@layer components {
+  /* Cards & containers */
+  .card {
+    @apply bg-white border border-paper-300 rounded-xl2 shadow-card transition-shadow;
+  }
+  .card-hover {
+    @apply hover:shadow-card-hover hover:border-paper-400;
+  }
+
+  /* Pills / badges */
+  .pill {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium border;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg
+           bg-accent-600 text-white font-medium text-sm
+           hover:bg-accent-700 active:bg-accent-700
+           focus:outline-none focus:ring-2 focus:ring-accent-300 focus:ring-offset-1
+           disabled:opacity-50 disabled:cursor-not-allowed
+           shadow-sm transition-colors;
+  }
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg
+           bg-transparent border border-paper-300 text-ink-700 font-medium text-sm
+           hover:bg-paper-100 hover:border-paper-400
+           focus:outline-none focus:ring-2 focus:ring-accent-300 focus:ring-offset-1
+           disabled:opacity-50 disabled:cursor-not-allowed
+           transition-colors;
+  }
+  .btn-danger {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg
+           bg-crimson-600 text-white font-medium text-sm
+           hover:bg-crimson-700
+           focus:outline-none focus:ring-2 focus:ring-crimson-500/40 focus:ring-offset-1
+           disabled:opacity-50 disabled:cursor-not-allowed
+           shadow-sm transition-colors;
+  }
+
+  /* Inputs */
+  .input {
+    @apply w-full px-3 py-2 rounded-lg
+           bg-white border border-paper-300 text-ink-800 text-sm
+           placeholder:text-ink-400
+           focus:outline-none focus:ring-2 focus:ring-accent-300 focus:border-accent-500
+           disabled:bg-paper-100 disabled:cursor-not-allowed
+           transition-colors;
+  }
+  .label {
+    @apply text-xs font-medium text-ink-600 mb-1 block;
+  }
+
+  /* Big stat numbers */
+  .stat-num {
+    @apply font-display font-semibold text-ink-900 tracking-tight;
+  }
+
+  /* Section header */
+  .section-title {
+    @apply text-xs font-semibold uppercase tracking-wider text-ink-500;
+  }
+
+  /* Code-ish */
+  .kbd {
+    @apply font-mono text-xs px-1.5 py-0.5 rounded bg-paper-200 border border-paper-300 text-ink-700;
+  }
+}
+
+/* ---------- recharts overrides (light) ---------- */
+.recharts-cartesian-grid line {
+  stroke: #e7e5e4 !important;
+}
+.recharts-cartesian-axis-line {
+  stroke: #d6d3d1 !important;
+}
+.recharts-text {
+  fill: #57534e !important;
+}
+.recharts-tooltip-wrapper {
+  filter: drop-shadow(0 4px 10px rgb(0 0 0 / 0.08));
+}
+.recharts-default-tooltip {
+  background: #ffffff !important;
+  border: 1px solid #d6d3d1 !important;
+  border-radius: 8px !important;
+  padding: 8px 12px !important;
+}
+.recharts-tooltip-label,
+.recharts-tooltip-item {
+  color: #292524 !important;
+}
