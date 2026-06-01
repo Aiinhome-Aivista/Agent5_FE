@@ -326,6 +326,7 @@ export default function RunbookUploadModal({
 
             {phase === "pick" && (
               <div className="space-y-4">
+                {/* 
                 <div className="flex items-center self-start bg-paper-200 p-1 rounded-xl relative w-max mb-2">
                   <button
                     type="button"
@@ -347,27 +348,8 @@ export default function RunbookUploadModal({
                     )}
                     Upload File
                   </button>
-                  <button
-                    type="button"
-                    onClick={() => setInputMode("text")}
-                    className={clsx(
-                      "relative px-4 py-2 text-xs font-bold uppercase tracking-wider rounded-lg transition-colors z-10",
-                      inputMode === "text"
-                        ? "text-ink-900"
-                        : "text-ink-500 hover:text-ink-700"
-                    )}
-                  >
-                    {inputMode === "text" && (
-                      <motion.div
-                        layoutId="active-tab"
-                        className="absolute inset-0 bg-white rounded-lg shadow-sm"
-                        style={{ zIndex: -1 }}
-                        transition={{ type: "spring", stiffness: 300, damping: 25 }}
-                      />
-                    )}
-                    Paste Text
-                  </button>
-                </div>
+                </div> 
+                */}
 
                 {inputMode === "file" && (
                   <div className="space-y-3">
@@ -417,7 +399,7 @@ export default function RunbookUploadModal({
                   </div>
                 )}
 
-                {inputMode === "text" && (
+                {/* {inputMode === "text" && (
                   <div className="space-y-3">
                     <label className="text-xs font-bold text-ink-900 uppercase tracking-wider block">
                       Runbook Text
@@ -439,7 +421,7 @@ export default function RunbookUploadModal({
                       </button>
                     </div>
                   </div>
-                )}
+                )} */}
               </div>
             )}
 
