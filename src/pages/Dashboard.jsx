@@ -186,7 +186,7 @@ export default function Dashboard() {
                   type="category"
                   axisLine={false}
                   tickLine={false}
-                  width={65}
+                  width={85}
                   tick={{ fill: "#57534e", fontSize: 13, fontWeight: 500 }}
                 />
                 <Tooltip

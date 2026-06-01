@@ -4,7 +4,7 @@ import { Section } from "../components/UI";
 
 export default function Reports() {
   return (
-    <div className="space-y-6 max-w-3xl">
+    <div className="space-y-6 max-w-6xl mx-auto">
       <Section
         title="Weekly Report"
         subtitle="Auto-generated Word document with executive summary, anomalies, recommendations, and forecast"
