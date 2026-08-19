@@ -145,8 +145,8 @@ export default function Layout() {
             <h1 className="text-sm font-medium text-[var(--color-primary-text)]">
               Platform Performance & Cost Optimization
             </h1>
-            <span className="pill bg-[#FFF7F2] dark:bg-[#282320] text-[#FF5A14] border border-[#FF8A55]/40 font-mono">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#FF5A14] animate-pulse-soft" />
+            <span className="pill bg-emerald-600 text-white font-semibold border border-emerald-500 shadow-sm font-mono tracking-wider px-2.5 py-0.5 text-[11px]">
+              <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse-soft" />
               LIVE
             </span>
           </div>
