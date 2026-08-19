@@ -2,12 +2,14 @@ import { useNavigate } from "react-router-dom";
 import {
   Activity,
   Lightbulb,
-  PlayCircle,
   Sparkles,
   MessageSquare,
   Zap,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { Section } from "../components/UI";
+import { useAppStore } from "../store/store";
 
 const FEATURES = [
   {
@@ -59,21 +61,64 @@ const STEPS = [
 
 export default function Landing() {
   const navigate = useNavigate();
+  const { theme, toggleTheme } = useAppStore();
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 via-white to-slate-100 text-ink-900">
+    <div className="min-h-screen transition-colors duration-200 bg-[var(--color-bg)] text-[var(--color-primary-text)]">
+      {/* Header Bar */}
+      <header className="sticky top-0 z-40 border-b border-[var(--color-light-border)] bg-[var(--color-bg)]/90 backdrop-blur-md">
+        <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3 cursor-pointer" onClick={() => navigate("/")}>
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#FF5A14] to-[#FF7A45] flex items-center justify-center shadow-md">
+              <Sparkles className="w-5 h-5 text-white" />
+            </div>
+            <div>
+              <span className="font-display font-bold text-base text-[var(--color-heading-text)] tracking-tight block leading-none">
+                Platform Agent
+              </span>
+              <span className="text-[10px] font-mono text-[var(--color-secondary-text)] uppercase tracking-wider">
+                FinOps & Optimization
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-3">
+            {/* Theme Toggle Button */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg border border-[var(--color-light-border)] text-[var(--color-primary-text)] hover:bg-[var(--color-input-bg)] hover:border-[#FF8A55] transition-colors"
+              title={`Switch to ${theme === "dark" ? "Light" : "Dark"} Mode`}
+            >
+              {theme === "dark" ? (
+                <Sun className="w-4 h-4 text-[#FF7A45]" />
+              ) : (
+                <Moon className="w-4 h-4 text-[#4A4A4A]" />
+              )}
+            </button>
+
+            <button
+              onClick={() => navigate("/login")}
+              className="btn-primary text-xs px-4 py-2"
+            >
+              Sign in
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
       <div className="mx-auto max-w-7xl px-6 py-16 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-[1.2fr_0.8fr] items-center">
           <div className="space-y-6">
-            <div className="inline-flex items-center gap-2 rounded-full bg-accent-50 px-4 py-2 text-sm font-medium text-accent-700 shadow-sm">
+            <div className="inline-flex items-center gap-2 rounded-full bg-[#FF5A14]/15 border border-[#FF8A55]/30 px-4 py-1.5 text-xs font-semibold text-[#FF7A45] shadow-sm">
               Platform optimization agent for FinOps teams
             </div>
             <div className="space-y-4">
-              <h1 className="text-4xl font-display font-semibold tracking-tight text-ink-900 sm:text-5xl">
+              <h1 className="text-4xl font-display font-semibold tracking-tight text-[var(--color-heading-text)] sm:text-5xl">
                 Optimize cloud cost, performance, and reliability from a single
                 agent.
               </h1>
-              <p className="max-w-2xl text-base text-ink-600 sm:text-lg">
+              <p className="max-w-2xl text-base text-[var(--color-secondary-text)] sm:text-lg">
                 This agent combines telemetry, anomaly detection, recommendation
                 orchestration, and execution workflows to help engineering and
                 finance teams reduce waste and keep cloud infrastructure lean.
@@ -88,113 +133,77 @@ export default function Landing() {
               </button>
               <a
                 href="#scope"
-                className="inline-flex items-center justify-center rounded-lg border border-paper-300 bg-white px-6 py-3 text-sm font-semibold text-ink-700 hover:bg-paper-100"
+                className="inline-flex items-center justify-center rounded-lg border border-[var(--color-light-border)] bg-[var(--color-card-bg)] px-6 py-3 text-sm font-semibold text-[var(--color-primary-text)] hover:border-[#FF8A55] hover:text-[#FF5A14] hover:bg-[var(--color-input-bg)] transition-all duration-200 shadow-sm"
               >
                 Explore demo
               </a>
             </div>
           </div>
-
-          {/* <div className="rounded-[2rem] border border-paper-300 bg-white/90 p-8 shadow-card">
-            <div className="space-y-4">
-              <div className="grid grid-cols-2 gap-4 text-center text-sm text-ink-500">
-                <div>
-                  <div className="text-3xl font-semibold text-ink-900">
-                    100%
-                  </div>
-                  <div className="mt-1">Cloud coverage</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-semibold text-ink-900">4</div>
-                  <div className="mt-1">Agent stages</div>
-                </div>
-              </div>
-              <div className="rounded-3xl border border-paper-200 bg-paper-50 p-5">
-                <div className="text-sm uppercase tracking-widest text-ink-400">
-                  Live pipeline
-                </div>
-                <div className="mt-4 space-y-3">
-                  <div className="rounded-2xl bg-white p-4 shadow-sm">
-                    <div className="text-sm font-semibold text-ink-900">
-                      Telemetry
-                    </div>
-                    <div className="text-xs text-ink-500 mt-1">
-                      Metric ingestion, anomaly detection, and context capture.
-                    </div>
-                  </div>
-                  <div className="rounded-2xl bg-white p-4 shadow-sm">
-                    <div className="text-sm font-semibold text-ink-900">
-                      Recommendations
-                    </div>
-                    <div className="text-xs text-ink-500 mt-1">
-                      Actionable opportunities prioritized by savings and risk.
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div> */}
         </div>
 
-        <div className="mt-20 space-y-10" id="scope">
+        <div className="mt-20 space-y-12" id="scope">
           <Section title="Project overview">
-            <div className="grid gap-4 lg:grid-cols-3">
+            <div className="grid gap-6 lg:grid-cols-3">
               {FEATURES.map(({ title, description, icon: Icon }) => (
-                <div key={title} className="card p-6 border-paper-300">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-accent-50 text-accent-700">
+                <div key={title} className="card card-hover p-6">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#FF5A14]/15 text-[#FF7A45] border border-[#FF8A55]/20">
                     <Icon className="h-5 w-5" />
                   </div>
-                  <h2 className="mt-4 text-lg font-semibold text-ink-900">
+                  <h2 className="mt-4 text-lg font-semibold text-[var(--color-heading-text)]">
                     {title}
                   </h2>
-                  <p className="mt-2 text-sm text-ink-600">{description}</p>
+                  <p className="mt-2 text-sm text-[var(--color-secondary-text)] leading-relaxed">
+                    {description}
+                  </p>
                 </div>
               ))}
             </div>
           </Section>
 
           <Section title="Project scope">
-            <div className="grid gap-4 lg:grid-cols-2">
-              <div className="card p-6 border-paper-300">
-                <h2 className="text-lg font-semibold text-ink-900">
+            <div className="grid gap-6 lg:grid-cols-2">
+              <div className="card card-hover p-6">
+                <h2 className="text-lg font-semibold text-[var(--color-heading-text)]">
                   What this agent manages
                 </h2>
-                <ul className="mt-4 space-y-3 text-sm text-ink-600">
-                  <li>Telemetry collection from cloud providers</li>
-                  <li>Anomaly detection and idle resource discovery</li>
-                  <li>Cost-saving recommendations and risk scoring</li>
-                  <li>Action execution and rollback workflows</li>
-                  <li>AI-powered chat for operational context</li>
+                <ul className="mt-4 space-y-3 text-sm text-[var(--color-secondary-text)]">
+                  <li className="flex items-center gap-2"><span className="text-[#FF5A14]">▸</span> Telemetry collection from cloud providers</li>
+                  <li className="flex items-center gap-2"><span className="text-[#FF5A14]">▸</span> Anomaly detection and idle resource discovery</li>
+                  <li className="flex items-center gap-2"><span className="text-[#FF5A14]">▸</span> Cost-saving recommendations and risk scoring</li>
+                  <li className="flex items-center gap-2"><span className="text-[#FF5A14]">▸</span> Action execution and rollback workflows</li>
+                  <li className="flex items-center gap-2"><span className="text-[#FF5A14]">▸</span> AI-powered chat for operational context</li>
                 </ul>
               </div>
-              <div className="card p-6 border-paper-300">
-                <h2 className="text-lg font-semibold text-ink-900">
+              <div className="card card-hover p-6">
+                <h2 className="text-lg font-semibold text-[var(--color-heading-text)]">
                   Who benefits
                 </h2>
-                <ul className="mt-4 space-y-3 text-sm text-ink-600">
-                  <li>FinOps leaders evaluating cloud spend</li>
-                  <li>Platform engineers monitoring performance</li>
-                  <li>Cloud architects designing cost-aware infrastructure</li>
-                  <li>DevOps teams coordinating rollout and rollback</li>
+                <ul className="mt-4 space-y-3 text-sm text-[var(--color-secondary-text)]">
+                  <li className="flex items-center gap-2"><span className="text-[#FF5A14]">▸</span> FinOps leaders evaluating cloud spend</li>
+                  <li className="flex items-center gap-2"><span className="text-[#FF5A14]">▸</span> Platform engineers monitoring performance</li>
+                  <li className="flex items-center gap-2"><span className="text-[#FF5A14]">▸</span> Cloud architects designing cost-aware infrastructure</li>
+                  <li className="flex items-center gap-2"><span className="text-[#FF5A14]">▸</span> DevOps teams coordinating rollout and rollback</li>
                 </ul>
               </div>
             </div>
           </Section>
 
           <Section title="How this agent works">
-            <div className="grid gap-4 lg:grid-cols-4">
+            <div className="grid gap-6 lg:grid-cols-4">
               {STEPS.map(({ title, description, icon: Icon }) => (
                 <div
                   key={title}
-                  className="rounded-3xl border border-paper-300 bg-white p-6 shadow-sm"
+                  className="card card-hover p-6 rounded-2xl"
                 >
-                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-slate-100 text-ink-700">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[var(--color-input-bg)] text-[#FF7A45] border border-[var(--color-light-border)]">
                     <Icon className="h-5 w-5" />
                   </div>
-                  <h3 className="mt-4 text-base font-semibold text-ink-900">
+                  <h3 className="mt-4 text-base font-semibold text-[var(--color-heading-text)]">
                     {title}
                   </h3>
-                  <p className="mt-2 text-sm text-ink-600">{description}</p>
+                  <p className="mt-2 text-sm text-[var(--color-secondary-text)] leading-relaxed">
+                    {description}
+                  </p>
                 </div>
               ))}
             </div>
