@@ -68,24 +68,24 @@ export default function Layout() {
   return (
     <div className="h-screen flex overflow-hidden">
       {/* Sidebar */}
-      <aside className="w-60 h-full border-r border-paper-300 bg-white/80 backdrop-blur-sm flex flex-col">
+      <aside className="w-60 h-full border-r border-[#5C5C5C] bg-[#4A4A4A] text-white flex flex-col">
         <div
           onClick={() => navigate("/")}
-          className="px-5 py-5 border-b border-paper-300 cursor-pointer"
+          className="px-5 py-5 border-b border-[#5C5C5C] cursor-pointer"
         >
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-2xl bg-gradient-to-br from-accent-500 to-accent-700 flex items-center justify-center shadow-sm flex-shrink-0">
+            <div className="w-8 h-8 rounded-2xl bg-gradient-to-br from-[#FF5A14] to-[#FF7A45] flex items-center justify-center shadow-sm flex-shrink-0">
               <Sparkles className="w-4 h-4 text-white" />
             </div>
             <div>
-              <div className="font-display font-semibold text-ink-900 text-sm tracking-tight leading-tight">
+              <div className="font-display font-semibold text-white text-sm tracking-tight leading-tight">
                 Optimization
                 <br />
                 Agent
               </div>
             </div>
           </div>
-          <div className="text-[10px] text-ink-400 mt-2.5 font-mono tracking-wider uppercase">
+          <div className="text-[10px] text-[#B0B0B0] mt-2.5 font-mono tracking-wider uppercase">
             FinOps · AIOps · v1.0
           </div>
         </div>
@@ -100,8 +100,8 @@ export default function Layout() {
                 clsx(
                   "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors group",
                   isActive
-                    ? "bg-accent-50 text-accent-700 border border-accent-500/20"
-                    : "text-ink-500 hover:text-ink-800 hover:bg-paper-200 border border-transparent",
+                    ? "bg-[#FF5A14] text-white font-medium shadow-sm"
+                    : "text-[#D8D8D8] hover:text-white hover:bg-[#585858] border border-transparent",
                 )
               }
             >
@@ -111,13 +111,13 @@ export default function Layout() {
           ))}
         </nav>
 
-        <div className="px-4 py-3 border-t border-paper-300">
-          <div className="px-4 py-3 border-t border-paper-300 space-y-3">
+        <div className="px-4 py-3 border-t border-[#5C5C5C]">
+          <div className="space-y-3">
             <div>
-              <div className="text-[10px] font-mono uppercase tracking-wider text-ink-400">
+              <div className="text-[10px] font-mono uppercase tracking-wider text-[#B0B0B0]">
                 Six-Agent Pipeline
               </div>
-              <div className="text-[10px] text-ink-400 mt-1 leading-relaxed">
+              <div className="text-[10px] text-[#B0B0B0] mt-1 leading-relaxed">
                 Telemetry → Analyzer → Action → Chat
               </div>
             </div>
@@ -128,12 +128,9 @@ export default function Layout() {
                 localStorage.removeItem("token");
                 localStorage.removeItem("user");
 
-                // optional: clear all storage
-                // localStorage.clear();
-
                 navigate("/");
               }}
-              className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm border border-red-200 text-red-600 hover:bg-red-50 transition-colors"
+              className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm border border-red-500/30 text-red-300 hover:bg-red-500/10 transition-colors"
             >
               <LogOut className="w-4 h-4" />
               Sign Out
@@ -145,13 +142,13 @@ export default function Layout() {
       {/* Main */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Topbar */}
-        <header className="h-14 border-b border-paper-300 bg-white/80 backdrop-blur-sm flex items-center justify-between px-5">
+        <header className="h-14 border-b border-[#D8D8D8] bg-[#FFFFFF] flex items-center justify-between px-5">
           <div className="flex items-center gap-3">
-            <h1 className="text-sm font-medium text-ink-700">
+            <h1 className="text-sm font-medium text-[#666666]">
               Platform Performance & Cost Optimization
             </h1>
-            <span className="pill bg-accent-50 text-accent-700 border border-accent-500/20 font-mono">
-              <span className="w-1.5 h-1.5 rounded-full bg-accent-400 animate-pulse-soft" />
+            <span className="pill bg-[#FFF7F2] text-[#FF5A14] border border-[#FF8A55]/40 font-mono">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#FF5A14] animate-pulse-soft" />
               LIVE
             </span>
           </div>

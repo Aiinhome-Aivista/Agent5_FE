@@ -13,23 +13,23 @@ html {
   scroll-behavior: smooth;
 }
 body {
-  @apply bg-paper-100 text-ink-700 font-sans antialiased;
+  @apply bg-[#FFFFFF] text-[#666666] font-sans antialiased;
   background-image:
     radial-gradient(
       circle at 0% 0%,
-      rgba(20, 184, 166, 0.04) 0%,
+      rgba(255, 90, 20, 0.03) 0%,
       transparent 40%
     ),
     radial-gradient(
       circle at 100% 100%,
-      rgba(139, 92, 246, 0.03) 0%,
+      rgba(255, 122, 69, 0.02) 0%,
       transparent 40%
     );
   background-attachment: fixed;
 }
 
 ::selection {
-  @apply bg-accent-100 text-accent-700;
+  @apply bg-[#FFEFE6] text-[#FF5A14];
 }
 
 /* ---------- scrollbar ---------- */
@@ -41,19 +41,19 @@ body {
   @apply bg-transparent;
 }
 ::-webkit-scrollbar-thumb {
-  @apply bg-paper-300 rounded-full;
+  @apply bg-[#D8D8D8] rounded-full;
 }
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-paper-400;
+  @apply bg-[#FF8A55];
 }
 
 @layer components {
   /* Cards & containers */
   .card {
-    @apply bg-white border border-paper-300 rounded-xl2 shadow-card transition-shadow;
+    @apply bg-[#FFFFFF] border border-[#D8D8D8] rounded-xl2 shadow-card transition-shadow;
   }
   .card-hover {
-    @apply hover:shadow-card-hover hover:border-paper-400;
+    @apply hover:shadow-card-hover hover:border-[#FF8A55];
   }
 
   /* Pills / badges */
@@ -64,17 +64,17 @@ body {
   /* Buttons */
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg
-           bg-accent-600 text-white font-medium text-sm
-           hover:bg-accent-700 active:bg-accent-700
-           focus:outline-none focus:ring-2 focus:ring-accent-300 focus:ring-offset-1
+           bg-[#FF7A45] text-[#FFFFFF] font-medium text-sm
+           hover:bg-[#F56B2F] active:bg-[#FF5A14]
+           focus:outline-none focus:ring-2 focus:ring-[#FF8A55] focus:ring-offset-1
            disabled:opacity-50 disabled:cursor-not-allowed
            shadow-sm transition-colors;
   }
   .btn-ghost {
     @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg
-           bg-transparent border border-paper-300 text-ink-700 font-medium text-sm
-           hover:bg-paper-100 hover:border-paper-400
-           focus:outline-none focus:ring-2 focus:ring-accent-300 focus:ring-offset-1
+           bg-transparent border border-[#D8D8D8] text-[#666666] font-medium text-sm
+           hover:bg-[#FFF7F2] hover:border-[#FF8A55] hover:text-[#FF5A14]
+           focus:outline-none focus:ring-2 focus:ring-[#FF8A55] focus:ring-offset-1
            disabled:opacity-50 disabled:cursor-not-allowed
            transition-colors;
   }
@@ -90,52 +90,52 @@ body {
   /* Inputs */
   .input {
     @apply w-full px-3 py-2 rounded-lg
-           bg-white border border-paper-300 text-ink-800 text-sm
-           placeholder:text-ink-400
-           focus:outline-none focus:ring-2 focus:ring-accent-300 focus:border-accent-500
-           disabled:bg-paper-100 disabled:cursor-not-allowed
+           bg-[#FFF7F2] border border-[#D8D8D8] text-[#666666] text-sm
+           placeholder:text-[#B0B0B0]
+           focus:outline-none focus:ring-2 focus:ring-[#FF8A55] focus:border-[#FF8A55]
+           disabled:bg-[#FFFFFF] disabled:cursor-not-allowed
            transition-colors;
   }
   .label {
-    @apply text-xs font-medium text-ink-600 mb-1 block;
+    @apply text-xs font-medium text-[#888888] mb-1 block;
   }
 
   /* Big stat numbers */
   .stat-num {
-    @apply font-display font-semibold text-ink-900 tracking-tight;
+    @apply font-display font-semibold text-[#666666] tracking-tight;
   }
 
   /* Section header */
   .section-title {
-    @apply text-xs font-semibold uppercase tracking-wider text-ink-500;
+    @apply text-xs font-semibold uppercase tracking-wider text-[#888888];
   }
 
   /* Code-ish */
   .kbd {
-    @apply font-mono text-xs px-1.5 py-0.5 rounded bg-paper-200 border border-paper-300 text-ink-700;
+    @apply font-mono text-xs px-1.5 py-0.5 rounded bg-[#FFF7F2] border border-[#D8D8D8] text-[#666666];
   }
 }
 
 /* ---------- recharts overrides (light) ---------- */
 .recharts-cartesian-grid line {
-  stroke: #e7e5e4 !important;
+  stroke: #D8D8D8 !important;
 }
 .recharts-cartesian-axis-line {
-  stroke: #d6d3d1 !important;
+  stroke: #D8D8D8 !important;
 }
 .recharts-text {
-  fill: #57534e !important;
+  fill: #888888 !important;
 }
 .recharts-tooltip-wrapper {
   filter: drop-shadow(0 4px 10px rgb(0 0 0 / 0.08));
 }
 .recharts-default-tooltip {
   background: #ffffff !important;
-  border: 1px solid #d6d3d1 !important;
+  border: 1px solid #FF8A55 !important;
   border-radius: 8px !important;
   padding: 8px 12px !important;
 }
 .recharts-tooltip-label,
 .recharts-tooltip-item {
-  color: #292524 !important;
+  color: #666666 !important;
 }

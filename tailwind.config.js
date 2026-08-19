@@ -4,51 +4,80 @@ export default {
   theme: {
     extend: {
       colors: {
-        // Surfaces — paper-white to soft warm gray
+        // Sidebar theme
+        sidebar: {
+          DEFAULT: '#4A4A4A',
+          hover: '#585858',
+          border: '#5C5C5C',
+          text: '#D8D8D8',
+          activeBg: '#FF5A14',
+          activeText: '#FFFFFF',
+        },
+        // Surfaces — Light Background (#FFFFFF), Input Background (#FFF7F2), Light Border (#D8D8D8), Orange Border (#FF8A55)
         paper: {
-          50:  '#ffffff',
-          100: '#fafaf9',  // app background
-          200: '#f5f5f4',  // muted surface
-          300: '#e7e5e4',  // border
-          400: '#d6d3d1',  // border-strong
-          500: '#a8a29e',  // muted text
+          50:  '#FFFFFF',
+          100: '#FFFFFF',  // Light Background (#FFFFFF)
+          200: '#FFF7F2',  // Input Background (#FFF7F2)
+          300: '#D8D8D8',  // Light Border (#D8D8D8)
+          400: '#FF8A55',  // Orange Border (#FF8A55)
+          500: '#B0B0B0',  // Placeholder (#B0B0B0)
         },
-        // Text — near-black slate stack
+        // Text — Primary Text (#666666), Secondary Text (#888888), Placeholder (#B0B0B0)
         ink: {
-          900: '#0c0a09', // strong text
-          800: '#1c1917',
-          700: '#292524', // body
-          600: '#44403c', // secondary
-          500: '#57534e', // muted
-          400: '#78716c', // hint
+          900: '#4A4A4A', // Dark text / Headings
+          800: '#666666', // Primary Text (#666666)
+          700: '#666666', // Primary Text (#666666)
+          600: '#888888', // Secondary Text (#888888)
+          500: '#888888', // Secondary Text (#888888)
+          400: '#B0B0B0', // Placeholder (#B0B0B0)
+          300: '#D8D8D8', // Light Border (#D8D8D8)
         },
-        // Primary action — teal, slightly deeper for light bg AA contrast
+        // Primary Orange (#FF5A14), Button Orange (#FF7A45), Hover Orange (#F56B2F)
         accent: {
-          50:  '#f0fdfa',
-          100: '#ccfbf1',
-          300: '#5eead4',
-          500: '#14b8a6',  // primary
-          600: '#0d9488',  // primary-hover
-          700: '#0f766e',
+          50:  '#FFF7F2',  // Input Background (#FFF7F2)
+          100: '#FFEFE6',
+          200: '#FFD7C4',
+          300: '#FFB394',
+          400: '#FF8A55',  // Orange Border (#FF8A55)
+          500: '#FF5A14',  // Primary Orange (#FF5A14)
+          600: '#FF7A45',  // Button Orange (#FF7A45)
+          700: '#F56B2F',  // Hover Orange (#F56B2F)
+          800: '#D94808',
+          900: '#B03500',
         },
-        // Status — calibrated for light bg
+        // Explicit named tokens matching user palette
+        brand: {
+          primary: '#FF5A14',
+          button: '#FF7A45',
+          hover: '#F56B2F',
+          sidebar: '#4A4A4A',
+          bg: '#FFFFFF',
+          inputBg: '#FFF7F2',
+          lightBorder: '#D8D8D8',
+          orangeBorder: '#FF8A55',
+          primaryText: '#666666',
+          secondaryText: '#888888',
+          placeholder: '#B0B0B0',
+          white: '#FFFFFF',
+        },
+        // Status — calibrated for warm orange theme
         gold: {
-          50:  '#fffbeb',
-          100: '#fef3c7',
+          50:  '#fffbf0',
+          100: '#feebc8',
           500: '#f59e0b',
           600: '#d97706',
           700: '#b45309',
         },
         crimson: {
-          50:  '#fef2f2',
-          100: '#fee2e2',
+          50:  '#fff5f5',
+          100: '#fed7d7',
           500: '#ef4444',
           600: '#dc2626',
           700: '#b91c1c',
         },
         emerald: {
-          50:  '#ecfdf5',
-          100: '#d1fae5',
+          50:  '#f0fdf4',
+          100: '#dcfce7',
           500: '#10b981',
           600: '#059669',
           700: '#047857',

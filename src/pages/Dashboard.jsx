@@ -35,12 +35,12 @@ import {
 } from "../components/UI";
 
 const PIE_COLORS = [
-  "#28d0ba",
-  "#8b5cf6",
-  "#f4c44a",
-  "#f47670",
-  "#5de6d1",
-  "#a78bfa",
+  "#FF5A14",
+  "#FF7A45",
+  "#F56B2F",
+  "#FF8A55",
+  "#4A4A4A",
+  "#888888",
 ];
 
 function TooltipCard({ active, payload, label, formatter }) {
@@ -131,8 +131,8 @@ export default function Dashboard() {
   const projected30d = Math.max(0, current30d - potentialSavings);
 
   const impactData = [
-    { name: "Current", value: current30d, fill: "#cbd5e1" },
-    { name: "Projected", value: projected30d, fill: "#a78bfa" },
+    { name: "Current", value: current30d, fill: "#D8D8D8" },
+    { name: "Projected", value: projected30d, fill: "#FF7A45" },
   ];
 
   return (
@@ -265,8 +265,8 @@ export default function Dashboard() {
               >
                 <defs>
                   <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#28d0ba" stopOpacity={0.4} />
-                    <stop offset="100%" stopColor="#28d0ba" stopOpacity={0} />
+                    <stop offset="0%" stopColor="#FF5A14" stopOpacity={0.4} />
+                    <stop offset="100%" stopColor="#FF5A14" stopOpacity={0} />
                   </linearGradient>
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" />
@@ -275,7 +275,7 @@ export default function Dashboard() {
                 <Tooltip
                   content={<TooltipCard formatter={(v) => fmt(v)} />}
                   cursor={{
-                    stroke: "#28d0ba",
+                    stroke: "#FF5A14",
                     strokeOpacity: 0.2,
                     strokeWidth: 1,
                   }}
@@ -283,7 +283,7 @@ export default function Dashboard() {
                 <Area
                   type="monotone"
                   dataKey="cost"
-                  stroke="#28d0ba"
+                  stroke="#FF5A14"
                   strokeWidth={2}
                   fill="url(#g1)"
                   name="Daily cost"

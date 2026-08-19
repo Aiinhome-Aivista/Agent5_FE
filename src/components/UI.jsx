@@ -142,7 +142,7 @@ export function EmptyState({ icon: Icon, title, description, action }) {
           <Icon className="w-5 h-5 text-ink-400" />
         </div>
       )}
-      <h3 className="text-white font-medium">{title}</h3>
+      <h3 className="text-ink-800 font-medium">{title}</h3>
       {description && (
         <p className="text-sm text-ink-400 mt-1 max-w-md">{description}</p>
       )}
@@ -155,7 +155,7 @@ export function Spinner({ className }) {
   return (
     <div
       className={clsx(
-        "animate-spin-slow w-4 h-4 border-2 border-accent-300 border-t-accent-400 rounded-full",
+        "animate-spin-slow w-4 h-4 border-2 border-[#FFB394] border-t-[#FF5A14] rounded-full",
         className,
       )}
     />
