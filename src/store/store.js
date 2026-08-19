@@ -10,6 +10,28 @@ export const useAppStore = create((set) => ({
   currency: 'USD',
   setCurrency: (currency) => set({ currency: 'USD' }),
 
+  // Theme: 'dark' | 'light'
+  theme: localStorage.getItem('theme') || 'dark',
+  toggleTheme: () =>
+    set((s) => {
+      const nextTheme = s.theme === 'dark' ? 'light' : 'dark';
+      localStorage.setItem('theme', nextTheme);
+      if (nextTheme === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+      return { theme: nextTheme };
+    }),
+  initTheme: () => {
+    const saved = localStorage.getItem('theme') || 'dark';
+    if (saved === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  },
+
   // Toast queue
   toasts: [],
   pushToast: (toast) =>

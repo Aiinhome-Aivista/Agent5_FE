@@ -103,13 +103,13 @@ export function MetricCard({ label, value, sub, accent = false, icon: Icon }) {
       )}
     >
       <div className="flex items-start justify-between">
-        <div className={clsx("stat-label", "text-ink-400")}>{label}</div>
-        {Icon && <Icon className="w-4 h-4 text-ink-400" />}
+        <div className={clsx("stat-label", "text-[var(--color-secondary-text)]")}>{label}</div>
+        {Icon && <Icon className="w-4 h-4 text-[var(--color-secondary-text)]" />}
       </div>
       <div className="stat-num mt-2">{value}</div>
-      {sub && <div className="text-xs text-ink-400 mt-1.5">{sub}</div>}
+      {sub && <div className="text-xs text-[var(--color-secondary-text)] mt-1.5">{sub}</div>}
       {accent && (
-        <div className="absolute -right-12 -bottom-12 w-32 h-32 bg-accent-50 blur-3xl rounded-full pointer-events-none" />
+        <div className="absolute -right-12 -bottom-12 w-32 h-32 bg-[#FF5A14]/10 blur-3xl rounded-full pointer-events-none" />
       )}
     </div>
   );
@@ -235,21 +235,21 @@ export function SavingsSummary({ data, loading }) {
   const projW = Math.round((projected / max) * 100);
 
   return (
-    <div className="card p-5 space-y-5">
+    <div className="card card-hover p-5 space-y-5">
       <div className="flex items-center justify-between flex-wrap gap-2">
         <div>
-          <h3 className="font-display text-base font-semibold text-ink-900">
+          <h3 className="font-display text-base font-semibold text-[var(--color-heading-text)]">
             Projected Savings (USD)
           </h3>
-          <p className="text-xs text-ink-400 mt-0.5">
+          <p className="text-xs text-[var(--color-secondary-text)] mt-0.5">
             If all {data.open_recommendation_count} open recommendations are applied
           </p>
         </div>
         <div className="text-right">
-          <div className="text-2xl font-display font-semibold text-accent-600 tabular-nums">
+          <div className="text-2xl font-display font-semibold text-[#FF7A45] tabular-nums">
             {fmtUSD(benefit)}/mo
           </div>
-          <div className="text-[10px] uppercase tracking-wider text-ink-400">
+          <div className="text-[10px] uppercase tracking-wider text-[var(--color-secondary-text)]">
             total aggregated benefit · {fmtPct(pct, 1)} of spend
           </div>
         </div>
@@ -259,24 +259,24 @@ export function SavingsSummary({ data, loading }) {
       <div className="space-y-3">
         <div>
           <div className="flex justify-between text-xs mb-1">
-            <span className="text-ink-500">Current monthly spend</span>
-            <span className="font-mono text-ink-800">{fmtUSD(current)}</span>
+            <span className="text-[var(--color-secondary-text)]">Current monthly spend</span>
+            <span className="font-mono text-[var(--color-heading-text)]">{fmtUSD(current)}</span>
           </div>
-          <div className="h-3 rounded-full bg-paper-200 overflow-hidden">
+          <div className="h-3 rounded-full bg-[var(--color-input-bg)] border border-[var(--color-light-border)] overflow-hidden">
             <div
-              className="h-full bg-ink-400 rounded-full transition-all"
+              className="h-full bg-[var(--color-placeholder)] rounded-full transition-all duration-300"
               style={{ width: `${curW}%` }}
             />
           </div>
         </div>
         <div>
           <div className="flex justify-between text-xs mb-1">
-            <span className="text-ink-500">Projected spend post-optimization</span>
-            <span className="font-mono text-accent-600">{fmtUSD(projected)}</span>
+            <span className="text-[var(--color-secondary-text)]">Projected spend post-optimization</span>
+            <span className="font-mono text-[#FF7A45] font-semibold">{fmtUSD(projected)}</span>
           </div>
-          <div className="h-3 rounded-full bg-paper-200 overflow-hidden">
+          <div className="h-3 rounded-full bg-[var(--color-input-bg)] border border-[var(--color-light-border)] overflow-hidden">
             <div
-              className="h-full bg-accent-500 rounded-full transition-all"
+              className="h-full bg-[#FF5A14] rounded-full transition-all duration-300"
               style={{ width: `${projW}%` }}
             />
           </div>
@@ -285,19 +285,19 @@ export function SavingsSummary({ data, loading }) {
 
       {/* Realized savings (audit trail) */}
       <div className="grid grid-cols-2 gap-3 pt-1">
-        <div className="rounded-lg bg-paper-100 px-3 py-2">
-          <div className="text-[10px] uppercase tracking-wider text-ink-400">
+        <div className="rounded-xl bg-[var(--color-input-bg)] border border-[var(--color-light-border)] px-4 py-3 hover:border-[#FF8A55] hover:bg-[#FF5A14]/10 transition-all duration-200 cursor-pointer shadow-sm">
+          <div className="text-[10px] uppercase tracking-wider text-[var(--color-secondary-text)] font-medium">
             Realized to date
           </div>
-          <div className="text-lg font-display font-semibold text-emerald-600 tabular-nums">
+          <div className="text-xl font-display font-semibold text-emerald-500 tabular-nums mt-0.5">
             {fmtUSD(realized)}
           </div>
         </div>
-        <div className="rounded-lg bg-paper-100 px-3 py-2">
-          <div className="text-[10px] uppercase tracking-wider text-ink-400">
+        <div className="rounded-xl bg-[var(--color-input-bg)] border border-[var(--color-light-border)] px-4 py-3 hover:border-[#FF8A55] hover:bg-[#FF5A14]/10 transition-all duration-200 cursor-pointer shadow-sm">
+          <div className="text-[10px] uppercase tracking-wider text-[var(--color-secondary-text)] font-medium">
             Already applied
           </div>
-          <div className="text-lg font-display font-semibold text-ink-700 tabular-nums">
+          <div className="text-xl font-display font-semibold text-[var(--color-heading-text)] tabular-nums mt-0.5">
             {fmtUSD(data.executed_savings_usd)}
           </div>
         </div>

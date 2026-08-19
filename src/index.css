@@ -2,6 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --color-bg: #FFFFFF;
+  --color-input-bg: #FFF7F2;
+  --color-card-bg: #FFFFFF;
+  --color-sidebar-bg: #4A4A4A;
+  --color-sidebar-border: #5C5C5C;
+  --color-header-bg: #FFFFFF;
+  --color-light-border: #D8D8D8;
+  --color-orange-border: #FF8A55;
+  --color-primary-orange: #FF5A14;
+  --color-button-orange: #FF7A45;
+  --color-hover-orange: #F56B2F;
+  --color-primary-text: #666666;
+  --color-secondary-text: #888888;
+  --color-placeholder: #B0B0B0;
+  --color-heading-text: #333333;
+}
+
+.dark {
+  --color-bg: #18181B;
+  --color-input-bg: #272320;
+  --color-card-bg: #222225;
+  --color-sidebar-bg: #2B2B2E;
+  --color-sidebar-border: #3F3F46;
+  --color-header-bg: #222225;
+  --color-light-border: #3F3F46;
+  --color-orange-border: #FF8A55;
+  --color-primary-orange: #FF5A14;
+  --color-button-orange: #FF7A45;
+  --color-hover-orange: #F56B2F;
+  --color-primary-text: #D4D4D8;
+  --color-secondary-text: #A1A1AA;
+  --color-placeholder: #71717A;
+  --color-heading-text: #FAFAFA;
+}
+
 /* ---------- base ---------- */
 html,
 body,
@@ -13,16 +49,18 @@ html {
   scroll-behavior: smooth;
 }
 body {
-  @apply bg-[#FFFFFF] text-[#666666] font-sans antialiased;
+  background-color: var(--color-bg);
+  color: var(--color-primary-text);
+  @apply font-sans antialiased transition-colors duration-200;
   background-image:
     radial-gradient(
       circle at 0% 0%,
-      rgba(255, 90, 20, 0.03) 0%,
+      rgba(255, 90, 20, 0.04) 0%,
       transparent 40%
     ),
     radial-gradient(
       circle at 100% 100%,
-      rgba(255, 122, 69, 0.02) 0%,
+      rgba(255, 122, 69, 0.03) 0%,
       transparent 40%
     );
   background-attachment: fixed;
@@ -41,19 +79,31 @@ body {
   @apply bg-transparent;
 }
 ::-webkit-scrollbar-thumb {
-  @apply bg-[#D8D8D8] rounded-full;
+  background-color: var(--color-light-border);
+  @apply rounded-full;
 }
 ::-webkit-scrollbar-thumb:hover {
-  @apply bg-[#FF8A55];
+  background-color: var(--color-orange-border);
 }
 
 @layer components {
   /* Cards & containers */
   .card {
-    @apply bg-[#FFFFFF] border border-[#D8D8D8] rounded-xl2 shadow-card transition-shadow;
+    background-color: var(--color-card-bg);
+    border-color: var(--color-light-border);
+    @apply border rounded-xl2 shadow-card transition-all duration-200;
   }
   .card-hover {
-    @apply hover:shadow-card-hover hover:border-[#FF8A55];
+    @apply transition-all duration-200;
+  }
+  .card-hover:hover {
+    border-color: var(--color-orange-border);
+    box-shadow: 0 4px 14px 0 rgba(255, 90, 20, 0.08);
+  }
+  .dark .card-hover:hover {
+    border-color: #FF8A55;
+    background-color: rgba(255, 90, 20, 0.03);
+    box-shadow: 0 4px 16px 0 rgba(255, 122, 69, 0.15);
   }
 
   /* Pills / badges */
@@ -71,12 +121,18 @@ body {
            shadow-sm transition-colors;
   }
   .btn-ghost {
+    background-color: transparent;
+    border-color: var(--color-light-border);
+    color: var(--color-primary-text);
     @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg
-           bg-transparent border border-[#D8D8D8] text-[#666666] font-medium text-sm
-           hover:bg-[#FFF7F2] hover:border-[#FF8A55] hover:text-[#FF5A14]
+           font-medium text-sm
+           hover:border-[#FF8A55] hover:text-[#FF5A14]
            focus:outline-none focus:ring-2 focus:ring-[#FF8A55] focus:ring-offset-1
            disabled:opacity-50 disabled:cursor-not-allowed
            transition-colors;
+  }
+  .btn-ghost:hover {
+    background-color: var(--color-input-bg);
   }
   .btn-danger {
     @apply inline-flex items-center justify-center gap-2 px-4 py-2 rounded-lg
@@ -89,53 +145,107 @@ body {
 
   /* Inputs */
   .input {
+    background-color: var(--color-input-bg);
+    border-color: var(--color-light-border);
+    color: var(--color-primary-text);
     @apply w-full px-3 py-2 rounded-lg
-           bg-[#FFF7F2] border border-[#D8D8D8] text-[#666666] text-sm
-           placeholder:text-[#B0B0B0]
+           border text-sm
            focus:outline-none focus:ring-2 focus:ring-[#FF8A55] focus:border-[#FF8A55]
-           disabled:bg-[#FFFFFF] disabled:cursor-not-allowed
+           disabled:opacity-60 disabled:cursor-not-allowed
            transition-colors;
   }
+  .input::placeholder {
+    color: var(--color-placeholder);
+  }
+
   .label {
-    @apply text-xs font-medium text-[#888888] mb-1 block;
+    color: var(--color-secondary-text);
+    @apply text-xs font-medium mb-1 block;
   }
 
   /* Big stat numbers */
   .stat-num {
-    @apply font-display font-semibold text-[#666666] tracking-tight;
+    color: var(--color-heading-text);
+    @apply font-display font-semibold tracking-tight;
   }
 
   /* Section header */
   .section-title {
-    @apply text-xs font-semibold uppercase tracking-wider text-[#888888];
+    color: var(--color-secondary-text);
+    @apply text-xs font-semibold uppercase tracking-wider;
   }
 
   /* Code-ish */
   .kbd {
-    @apply font-mono text-xs px-1.5 py-0.5 rounded bg-[#FFF7F2] border border-[#D8D8D8] text-[#666666];
+    background-color: var(--color-input-bg);
+    border-color: var(--color-light-border);
+    color: var(--color-primary-text);
+    @apply font-mono text-xs px-1.5 py-0.5 rounded border;
   }
 }
 
-/* ---------- recharts overrides (light) ---------- */
+/* ---------- recharts overrides ---------- */
 .recharts-cartesian-grid line {
-  stroke: #D8D8D8 !important;
+  stroke: var(--color-light-border) !important;
 }
 .recharts-cartesian-axis-line {
-  stroke: #D8D8D8 !important;
+  stroke: var(--color-light-border) !important;
 }
 .recharts-text {
-  fill: #888888 !important;
+  fill: var(--color-secondary-text) !important;
 }
 .recharts-tooltip-wrapper {
-  filter: drop-shadow(0 4px 10px rgb(0 0 0 / 0.08));
+  filter: drop-shadow(0 4px 10px rgb(0 0 0 / 0.15));
 }
 .recharts-default-tooltip {
-  background: #ffffff !important;
+  background: var(--color-card-bg) !important;
   border: 1px solid #FF8A55 !important;
   border-radius: 8px !important;
   padding: 8px 12px !important;
 }
 .recharts-tooltip-label,
 .recharts-tooltip-item {
-  color: #666666 !important;
+  color: var(--color-primary-text) !important;
+}
+
+/* ---------- Dark Mode Global Hover State Overrides ---------- */
+.dark .card-hover:hover,
+.dark .card:hover {
+  border-color: #FF8A55 !important;
+}
+
+.dark .card-hover:hover {
+  background-color: rgba(255, 90, 20, 0.06) !important;
+  box-shadow: 0 4px 18px 0 rgba(255, 122, 69, 0.16) !important;
+}
+
+.dark .hover\:bg-paper-100:hover,
+.dark .hover\:bg-paper-200:hover,
+.dark .hover\:bg-accent-50:hover,
+.dark .hover\:bg-slate-50:hover {
+  background-color: rgba(255, 90, 20, 0.12) !important;
+}
+
+.dark .hover\:border-paper-300:hover,
+.dark .hover\:border-paper-400:hover,
+.dark .hover\:border-accent-300:hover,
+.dark .hover\:border-slate-300:hover {
+  border-color: #FF8A55 !important;
+}
+
+.dark .hover\:text-ink-800:hover,
+.dark .hover\:text-ink-700:hover,
+.dark .hover\:text-ink-900:hover {
+  color: #FAFAFA !important;
+}
+
+.dark table tr:hover,
+.dark tr.hover\:bg-paper-100:hover {
+  background-color: rgba(255, 90, 20, 0.1) !important;
+}
+
+.dark .btn-ghost:hover {
+  background-color: rgba(255, 90, 20, 0.12) !important;
+  border-color: #FF8A55 !important;
+  color: #FF7A45 !important;
 }

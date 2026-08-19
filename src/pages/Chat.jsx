@@ -36,23 +36,23 @@ const SUGGESTED_PROMPTS = [
 
 function CitationBadge({ citation, idx }) {
   const colorMap = {
-    recommendation: "bg-accent-50 text-accent-700 border-accent-300",
-    anomaly: "bg-gold-500/15 text-gold-400 border-gold-500/25",
-    playbook: "bg-violet-500/15 text-violet-400 border-violet-500/25",
-    action: "bg-paper-200 text-ink-700 border-paper-400",
-    cost: "bg-accent-50 text-accent-200 border-accent-500/20",
+    recommendation: "bg-[#FF5A14]/15 text-[#FF7A45] border-[#FF8A55]/30",
+    anomaly: "bg-amber-500/15 text-amber-400 border-amber-500/30",
+    playbook: "bg-violet-500/15 text-violet-300 border-violet-500/30",
+    action: "bg-sky-500/15 text-sky-300 border-sky-500/30",
+    cost: "bg-[#FF5A14]/15 text-[#FF7A45] border-[#FF8A55]/30",
   };
   const cls =
-    colorMap[citation.type] || "bg-paper-100 text-ink-500 border-paper-300";
+    colorMap[citation.type] || "bg-[var(--color-input-bg)] text-[var(--color-primary-text)] border-[var(--color-light-border)]";
   return (
     <span
       className={clsx(
-        "pill border text-[10px] font-mono inline-flex items-center gap-1",
+        "pill border text-[11px] font-mono inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full shadow-sm transition-all duration-200 hover:scale-[1.02]",
         cls,
       )}
       title={citation.snippet}
     >
-      [{idx + 1}] {citation.source}
+      <span className="font-bold opacity-90">[{idx + 1}]</span> {citation.source}
     </span>
   );
 }
@@ -79,7 +79,7 @@ function MarkdownLite({ text }) {
         const inline = parts.map((p, j) => {
           if (p.startsWith("**") && p.endsWith("**"))
             return (
-              <strong key={j} className="text-ink-900 font-semibold">
+              <strong key={j} className="text-[var(--color-heading-text)] font-semibold">
                 {p.slice(2, -2)}
               </strong>
             );
@@ -87,7 +87,7 @@ function MarkdownLite({ text }) {
             return (
               <code
                 key={j}
-                className="px-1.5 py-0.5 bg-paper-200 rounded text-[12px] font-mono text-accent-700"
+                className="px-1.5 py-0.5 bg-[var(--color-input-bg)] border border-[var(--color-light-border)] rounded text-[12px] font-mono text-[#FF7A45]"
               >
                 {p.slice(1, -1)}
               </code>
@@ -96,7 +96,7 @@ function MarkdownLite({ text }) {
             return (
               <span
                 key={j}
-                className="text-accent-600 font-mono text-[12px] font-medium"
+                className="text-[#FF7A45] font-mono text-[12px] font-semibold"
               >
                 {p}
               </span>
@@ -108,29 +108,29 @@ function MarkdownLite({ text }) {
           return (
             <h4
               key={i}
-              className="font-display text-base font-semibold text-ink-900 mt-2"
+              className="font-display text-base font-semibold text-[var(--color-heading-text)] mt-2"
             >
               {inline}
             </h4>
           );
         if (isBullet)
           return (
-            <div key={i} className="flex gap-2 text-ink-700">
-              <span className="text-accent-600 flex-shrink-0 mt-1">▸</span>
+            <div key={i} className="flex gap-2 text-[var(--color-primary-text)]">
+              <span className="text-[#FF5A14] flex-shrink-0 mt-1">▸</span>
               <span className="flex-1">{inline}</span>
             </div>
           );
         if (isNumbered)
           return (
-            <div key={i} className="flex gap-2 text-ink-700">
-              <span className="text-accent-600 font-mono text-xs flex-shrink-0 mt-1">
+            <div key={i} className="flex gap-2 text-[var(--color-primary-text)]">
+              <span className="text-[#FF5A14] font-mono text-xs flex-shrink-0 mt-1">
                 {line.match(/^\s*(\d+)\./)?.[1]}.
               </span>
               <span className="flex-1">{inline}</span>
             </div>
           );
         return (
-          <p key={i} className="text-ink-700 leading-relaxed">
+          <p key={i} className="text-[var(--color-primary-text)] leading-relaxed">
             {inline}
           </p>
         );
@@ -319,25 +319,25 @@ export default function Chat() {
               <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-accent-400 to-accent-600 flex items-center justify-center mb-5 shadow-sm">
                 <MessageSquare className="w-6 h-6 text-white" />
               </div>
-              <h3 className="font-display text-xl font-semibold text-ink-900 mb-2">
+              <h3 className="font-display text-xl font-semibold text-[var(--color-heading-text)] mb-2">
                 Ask anything about your cloud platform
               </h3>
-              <p className="text-sm text-ink-500 mb-7 max-w-md">
+              <p className="text-sm text-[var(--color-secondary-text)] mb-7 max-w-md">
                 The agent pulls live data from AWS + Azure, recent
                 recommendations, action history, and the optimization playbook
                 KB, then answers with citations.
               </p>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 w-full">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full">
                 {SUGGESTED_PROMPTS.map((p, i) => {
                   const Icon = p.icon;
                   return (
                     <button
                       key={i}
                       onClick={() => send(p.text)}
-                      className="text-left p-3.5 rounded-lg border border-paper-300 bg-paper-100 hover:border-accent-300 hover:bg-accent-50 transition-colors group"
+                      className="text-left p-4 rounded-xl border border-[var(--color-light-border)] bg-[var(--color-input-bg)] hover:border-[#FF8A55] hover:bg-[#FF5A14]/15 transition-all duration-200 group shadow-sm"
                     >
-                      <Icon className="w-4 h-4 text-accent-600 mb-2 group-hover:scale-110 transition-transform" />
-                      <p className="text-sm text-ink-700 leading-snug">
+                      <Icon className="w-4 h-4 text-[#FF7A45] mb-2 group-hover:scale-110 transition-transform" />
+                      <p className="text-sm text-[var(--color-primary-text)] group-hover:text-[var(--color-heading-text)] leading-snug font-medium">
                         {p.text}
                       </p>
                     </button>
@@ -372,7 +372,7 @@ export default function Chat() {
                         ? "bg-accent-600 text-white rounded-br-sm"
                         : m.error
                           ? "bg-crimson-500/10 border border-crimson-500/30 text-crimson-300 rounded-bl-sm"
-                          : "bg-paper-200 border border-paper-300 text-ink-800 rounded-bl-sm",
+                          : "bg-[var(--color-input-bg)] border border-[var(--color-light-border)] text-[var(--color-primary-text)] rounded-bl-sm",
                     )}
                   >
                     {m.role === "user" ? (

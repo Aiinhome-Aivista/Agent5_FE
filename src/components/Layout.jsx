@@ -11,6 +11,8 @@ import {
   Sparkles,
   Zap,
   LogOut,
+  Sun,
+  Moon,
 } from "lucide-react";
 import clsx from "clsx";
 import { useState } from "react";
@@ -34,7 +36,7 @@ const NAV = [
 import ScanProgressModal from "./ScanProgressModal";
 
 export default function Layout() {
-  const { provider, pushToast } = useAppStore();
+  const { provider, pushToast, theme, toggleTheme } = useAppStore();
   const [scanning, setScanning] = useState(false);
   const [scanRunId, setScanRunId] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -44,7 +46,6 @@ export default function Layout() {
     setScanning(true);
     setModalOpen(true);
     try {
-      // Kick off ASYNC scan — returns immediately with a scan_run_id we poll
       const { data } = await endpoints.runScanAsync(provider || "all", false);
       setScanRunId(data.scan_run_id);
     } catch (e) {
@@ -61,17 +62,16 @@ export default function Layout() {
   const closeModal = () => {
     setModalOpen(false);
     setScanRunId(null);
-    // Hint to currently-loaded pages: refresh by reloading the current route
     window.dispatchEvent(new CustomEvent("scan:completed"));
   };
 
   return (
-    <div className="h-screen flex overflow-hidden">
+    <div className="h-screen flex overflow-hidden bg-[var(--color-bg)] text-[var(--color-primary-text)]">
       {/* Sidebar */}
-      <aside className="w-60 h-full border-r border-[#5C5C5C] bg-[#4A4A4A] text-white flex flex-col">
+      <aside className="w-60 h-full border-r border-[var(--color-sidebar-border)] bg-[var(--color-sidebar-bg)] text-white flex flex-col transition-colors duration-200">
         <div
           onClick={() => navigate("/")}
-          className="px-5 py-5 border-b border-[#5C5C5C] cursor-pointer"
+          className="px-5 py-5 border-b border-[var(--color-sidebar-border)] cursor-pointer"
         >
           <div className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-2xl bg-gradient-to-br from-[#FF5A14] to-[#FF7A45] flex items-center justify-center shadow-sm flex-shrink-0">
@@ -101,7 +101,7 @@ export default function Layout() {
                   "flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors group",
                   isActive
                     ? "bg-[#FF5A14] text-white font-medium shadow-sm"
-                    : "text-[#D8D8D8] hover:text-white hover:bg-[#585858] border border-transparent",
+                    : "text-[#D8D8D8] hover:text-white hover:bg-white/10 border border-transparent",
                 )
               }
             >
@@ -111,7 +111,7 @@ export default function Layout() {
           ))}
         </nav>
 
-        <div className="px-4 py-3 border-t border-[#5C5C5C]">
+        <div className="px-4 py-3 border-t border-[var(--color-sidebar-border)]">
           <div className="space-y-3">
             <div>
               <div className="text-[10px] font-mono uppercase tracking-wider text-[#B0B0B0]">
@@ -124,10 +124,8 @@ export default function Layout() {
 
             <button
               onClick={() => {
-                // Clear auth/session data
                 localStorage.removeItem("token");
                 localStorage.removeItem("user");
-
                 navigate("/");
               }}
               className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm border border-red-500/30 text-red-300 hover:bg-red-500/10 transition-colors"
@@ -142,18 +140,32 @@ export default function Layout() {
       {/* Main */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Topbar */}
-        <header className="h-14 border-b border-[#D8D8D8] bg-[#FFFFFF] flex items-center justify-between px-5">
+        <header className="h-14 border-b border-[var(--color-light-border)] bg-[var(--color-header-bg)] flex items-center justify-between px-5 transition-colors duration-200">
           <div className="flex items-center gap-3">
-            <h1 className="text-sm font-medium text-[#666666]">
+            <h1 className="text-sm font-medium text-[var(--color-primary-text)]">
               Platform Performance & Cost Optimization
             </h1>
-            <span className="pill bg-[#FFF7F2] text-[#FF5A14] border border-[#FF8A55]/40 font-mono">
+            <span className="pill bg-[#FFF7F2] dark:bg-[#282320] text-[#FF5A14] border border-[#FF8A55]/40 font-mono">
               <span className="w-1.5 h-1.5 rounded-full bg-[#FF5A14] animate-pulse-soft" />
               LIVE
             </span>
           </div>
           <div className="flex items-center gap-2">
             <EnvironmentSelector />
+
+            {/* Theme Toggle Button */}
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-lg border border-[var(--color-light-border)] text-[var(--color-primary-text)] hover:bg-[var(--color-input-bg)] hover:border-[#FF8A55] transition-colors"
+              title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+            >
+              {theme === 'dark' ? (
+                <Sun className="w-4 h-4 text-[#FF7A45]" />
+              ) : (
+                <Moon className="w-4 h-4 text-[#FF5A14]" />
+              )}
+            </button>
+
             <button
               onClick={runScan}
               disabled={scanning}

@@ -35,27 +35,29 @@ import {
 } from "../components/UI";
 
 const PIE_COLORS = [
-  "#FF5A14",
-  "#FF7A45",
-  "#F56B2F",
-  "#FF8A55",
-  "#4A4A4A",
-  "#888888",
+  "#FF5A14", // Primary Orange
+  "#8B5CF6", // Vivid Violet
+  "#10B981", // Emerald Green
+  "#0EA5E9", // Sky Blue
+  "#F59E0B", // Golden Amber
+  "#EC4899", // Rose Pink
+  "#6366F1", // Indigo
+  "#14B8A6", // Teal
 ];
 
 function TooltipCard({ active, payload, label, formatter }) {
   if (!active || !payload || !payload.length) return null;
   return (
     <div className="card p-3 text-xs font-mono">
-      <div className="text-ink-500 mb-1">{label}</div>
+      <div className="text-[var(--color-secondary-text)] mb-1">{label}</div>
       {payload.map((p, i) => (
         <div key={i} className="flex items-center gap-2">
           <span
             className="w-2 h-2 rounded-full"
             style={{ background: p.color }}
           />
-          <span className="text-ink-700">{p.name}:</span>
-          <span className="text-ink-900 font-medium">
+          <span className="text-[var(--color-primary-text)]">{p.name}:</span>
+          <span className="text-[var(--color-heading-text)] font-medium">
             {formatter ? formatter(p.value) : p.value}
           </span>
         </div>
@@ -131,49 +133,49 @@ export default function Dashboard() {
   const projected30d = Math.max(0, current30d - potentialSavings);
 
   const impactData = [
-    { name: "Current", value: current30d, fill: "#D8D8D8" },
+    { name: "Current", value: current30d, fill: "var(--color-light-border)" },
     { name: "Projected", value: projected30d, fill: "#FF7A45" },
   ];
 
   return (
     <div className="space-y-6">
       {/* Optimization Impact */}
-      <div className="card p-6 bg-gradient-to-br from-paper-50 to-paper-100 border border-paper-300">
+      <div className="card p-6">
         <div className="flex items-center gap-2 mb-6">
-          <TrendingDown className="w-5 h-5 text-accent-600" />
-          <h3 className="text-lg font-display font-semibold text-ink-900">
+          <TrendingDown className="w-5 h-5 text-[#FF5A14]" />
+          <h3 className="text-lg font-display font-semibold text-[var(--color-heading-text)]">
             Optimization Impact
           </h3>
         </div>
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-6 divide-y sm:divide-y-0 sm:divide-x divide-paper-300">
+          <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-6 divide-y sm:divide-y-0 sm:divide-x divide-[var(--color-light-border)]">
             <div className="flex flex-col pt-4 sm:pt-0">
-              <span className="text-sm text-ink-500 font-medium mb-1">
+              <span className="text-sm text-[var(--color-secondary-text)] font-medium mb-1">
                 Current Spend (30d)
               </span>
-              <span className="text-3xl font-display font-semibold text-ink-900">
+              <span className="text-3xl font-display font-semibold text-[var(--color-heading-text)]">
                 {fmt(current30d)}
               </span>
             </div>
             <div className="flex flex-col pt-4 sm:pt-0 sm:pl-6">
-              <span className="text-sm text-ink-500 font-medium mb-1">
+              <span className="text-sm text-[var(--color-secondary-text)] font-medium mb-1">
                 Projected Spend
               </span>
-              <span className="text-3xl font-display font-semibold text-accent-600">
+              <span className="text-3xl font-display font-semibold text-[#FF7A45]">
                 {fmt(projected30d)}
               </span>
             </div>
             <div className="flex flex-col pt-4 sm:pt-0 sm:pl-6">
-              <span className="text-sm text-ink-500 font-medium mb-1">
+              <span className="text-sm text-[var(--color-secondary-text)] font-medium mb-1">
                 Total Benefit
               </span>
-              <span className="text-3xl font-display font-semibold text-emerald-600">
+              <span className="text-3xl font-display font-semibold text-emerald-500">
                 {fmt(potentialSavings)}
                 <span className="text-lg font-normal opacity-70 ml-1">/mo</span>
               </span>
             </div>
           </div>
-          <div className="lg:col-span-5 border-t lg:border-t-0 lg:border-l border-paper-300 pt-6 lg:pt-0 lg:pl-8">
+          <div className="lg:col-span-5 border-t lg:border-t-0 lg:border-l border-[var(--color-light-border)] pt-6 lg:pt-0 lg:pl-8">
             <ResponsiveContainer width="100%" height={100}>
               <BarChart
                 data={impactData}
@@ -187,10 +189,10 @@ export default function Dashboard() {
                   axisLine={false}
                   tickLine={false}
                   width={85}
-                  tick={{ fill: "#57534e", fontSize: 13, fontWeight: 500 }}
+                  tick={{ fill: "var(--color-secondary-text)", fontSize: 13, fontWeight: 500 }}
                 />
                 <Tooltip
-                  cursor={{ fill: "rgba(0,0,0,0.03)" }}
+                  cursor={{ fill: "rgba(0,0,0,0.05)" }}
                   content={<TooltipCard formatter={(v) => fmt(v)} />}
                 />
                 <Bar dataKey="value" radius={[0, 4, 4, 0]} barSize={22}>
@@ -316,8 +318,8 @@ export default function Dashboard() {
                   cy="50%"
                   outerRadius={80}
                   innerRadius={45}
-                  paddingAngle={2}
-                  stroke="#ffffff"
+                  paddingAngle={3}
+                  stroke="var(--color-card-bg)"
                   strokeWidth={2}
                 >
                   {byService.map((_, i) => (
@@ -326,7 +328,7 @@ export default function Dashboard() {
                 </Pie>
                 <Tooltip content={<TooltipCard formatter={(v) => fmt(v)} />} />
                 <Legend
-                  wrapperStyle={{ fontSize: 11, color: "#57534e" }}
+                  wrapperStyle={{ fontSize: 11, color: "var(--color-secondary-text)" }}
                   iconSize={8}
                   iconType="circle"
                 />
