@@ -64,7 +64,7 @@ export default function Landing() {
   const { theme, toggleTheme } = useAppStore();
 
   return (
-    <div className="min-h-screen transition-colors duration-200 bg-[var(--color-bg)] text-[var(--color-primary-text)]">
+    <div className="min-h-screen transition-colors duration-200 bg-[#FF5A14]/10 dark:bg-[var(--color-bg)] text-[var(--color-primary-text)]">
       {/* Header Bar */}
       <header className="sticky top-0 z-40 border-b border-[var(--color-light-border)] bg-[var(--color-bg)]/90 backdrop-blur-md">
         <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
