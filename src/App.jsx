@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Routes, Route } from "react-router-dom";
 import Layout from "./components/Layout";
 import Landing from "./pages/Landing";
@@ -10,8 +11,14 @@ import Actions from "./pages/Actions";
 import Chat from "./pages/Chat";
 import Reports from "./pages/Reports";
 import Settings from "./pages/Settings";
+import { useAppStore } from "./store/store";
 
 export default function App() {
+  const { initTheme } = useAppStore();
+
+  useEffect(() => {
+    initTheme();
+  }, [initTheme]);
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
