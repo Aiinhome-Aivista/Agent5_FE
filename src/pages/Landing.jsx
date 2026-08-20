@@ -115,8 +115,8 @@ export default function Landing() {
             </div>
             <div className="space-y-4">
               <h1 className="text-4xl font-display font-semibold tracking-tight text-[var(--color-heading-text)] sm:text-5xl">
-                Optimize cloud cost, performance, and reliability from a single
-                agent.
+                Optimize cloud cost, performance,{" "}
+                <span className="text-[#FF5A14]">and reliability from a single agent.</span>
               </h1>
               <p className="max-w-2xl text-base text-[var(--color-secondary-text)] sm:text-lg">
                 This agent combines telemetry, anomaly detection, recommendation
