@@ -64,7 +64,7 @@ export default function Landing() {
   const { theme, toggleTheme } = useAppStore();
 
   return (
-    <div className="min-h-screen transition-colors duration-200 bg-[var(--color-bg)] text-[var(--color-primary-text)]">
+    <div className="min-h-screen transition-colors duration-200 bg-[#FF5A14]/10 dark:bg-[var(--color-bg)] text-[var(--color-primary-text)]">
       {/* Header Bar */}
       <header className="sticky top-0 z-40 border-b border-[var(--color-light-border)] bg-[var(--color-bg)]/90 backdrop-blur-md">
         <div className="mx-auto max-w-7xl px-6 py-4 flex items-center justify-between">
@@ -115,8 +115,8 @@ export default function Landing() {
             </div>
             <div className="space-y-4">
               <h1 className="text-4xl font-display font-semibold tracking-tight text-[var(--color-heading-text)] sm:text-5xl">
-                Optimize cloud cost, performance, and reliability from a single
-                agent.
+                Optimize cloud cost, performance,{" "}
+                <span className="text-[#FF5A14]">and reliability from a single agent.</span>
               </h1>
               <p className="max-w-2xl text-base text-[var(--color-secondary-text)] sm:text-lg">
                 This agent combines telemetry, anomaly detection, recommendation
