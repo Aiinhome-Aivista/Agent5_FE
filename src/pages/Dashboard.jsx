@@ -206,7 +206,7 @@ export default function Dashboard() {
         </div>
       </div>
 
-      {/* Top tiles */}
+      {/* Top tiles. */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         <MetricCard
           label="Spend(Last 7d)"
