@@ -239,7 +239,7 @@ export default function Dashboard() {
         <MetricCard
           label="Resources monitored"
           value={fmtNum(overview?.resources_monitored)}
-          sub="EC2 · RDS · Azure VM · …"
+          sub="Across selected scope"
           icon={Server}
         />
       </div>

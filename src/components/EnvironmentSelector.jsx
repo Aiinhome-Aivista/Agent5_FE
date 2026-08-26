@@ -55,7 +55,7 @@ export default function EnvironmentSelector() {
     <div className="flex items-center gap-2">
       {/* Provider switcher */}
       <div className="flex bg-paper-200 border border-paper-300 rounded-lg p-0.5">
-        {["all", "aws", "azure"].map((p) => (
+        {["all", /*"aws",*/ "azure"].map((p) => (
           <button
             key={p}
             onClick={() => setProvider(p)}
