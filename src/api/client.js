@@ -49,6 +49,7 @@ export const endpoints = {
 
   // rules (dynamic rulebook)
   rules: (params) => api.get("/rules", { params }),
+  ruleHistory: (params) => api.get("/rules/history/executed", { params }),
   createRule: (data) => api.post("/rules", data),
   updateRule: (id, data) => api.patch(`/rules/${id}`, data),
   approveRule: (id, approved_by = "ui-user") =>
@@ -60,6 +61,10 @@ export const endpoints = {
   action: (id) => api.get(`/actions/${id}`),
   rollback: (id, actor) =>
     api.post(`/actions/${id}/rollback`, null, { params: { actor } }),
+  actionAzureLog: (id) => api.get(`/actions/${id}/azure-log`),
+
+  // azure databricks
+  databricksClusters: (params) => api.get("/databricks/clusters", { params }),
 
   // scan
   runScan: (provider = "all", dry_run = false) =>

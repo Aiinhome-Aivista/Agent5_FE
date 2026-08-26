@@ -43,6 +43,7 @@ const EMPTY_AZURE = {
   client_id: "",
   client_secret: "",
   subscription_id: "",
+  databricks_token: "",
 };
 
 export default function Settings() {
@@ -377,6 +378,23 @@ export default function Settings() {
                       }}
                     />
                   </div>
+                  {/* <div className="md:col-span-2">
+                    <label className="label">
+                      Databricks token{" "}
+                      <span className="text-ink-400 font-normal normal-case">
+                        (optional)
+                      </span>
+                    </label>
+                    <input
+                      type="password"
+                      className="input font-mono"
+                      placeholder="dapi••••••••  (only needed if the service principal above isn't a Databricks workspace user)"
+                      value={azure.databricks_token}
+                      onChange={(e) => {
+                        setAzure({ ...azure, databricks_token: e.target.value });
+                      }}
+                    />
+                  </div> */}
                 </div>
               )}
             </div>

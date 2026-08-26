@@ -9,6 +9,9 @@ import {
   ShieldAlert,
   ArrowUpDown,
   PlayCircle,
+  Boxes,
+  Database,
+  ExternalLink,
 } from "lucide-react";
 import { endpoints } from "../api/client";
 import { useAppStore } from "../store/store";
@@ -164,6 +167,18 @@ export default function Recommendations() {
         <div className="space-y-2.5">
           {items.map((r) => {
             const isOpen = expanded[r.id];
+
+            let rgName = r.resource_group_name;
+            let rgId = r.resource_group_id;
+            const resId = r.resource_id || r.target_resource_id || "";
+            if (!rgName && resId.toLowerCase().includes("/resourcegroups/")) {
+              const match = resId.match(/(\/subscriptions\/[^\/]+\/resourceGroups\/([^\/]+))/i);
+              if (match) {
+                rgId = match[1];
+                rgName = match[2];
+              }
+            }
+
             return (
               <div key={r.id} className="card card-hover">
                 <div
@@ -194,8 +209,8 @@ export default function Recommendations() {
                         <div className="text-[12px] text-ink-500 mt-0.5 line-clamp-1">
                           {r.description}
                         </div>
-                        <div className="text-[11px] font-mono text-ink-400 mt-1 truncate">
-                          {r.target_resource_id}
+                        <div className="text-[11px] font-mono text-ink-400 mt-1 truncate" title={resId}>
+                          {resId}
                         </div>
                       </div>
                     </div>
@@ -255,6 +270,68 @@ export default function Recommendations() {
                         <span className="text-sm text-ink-800">
                           {r.scale_suggestion}
                         </span>
+                      </div>
+                    )}
+
+                    {/* Azure Resource Group */}
+                    {rgName && (
+                      <div className="flex items-center gap-2 rounded-lg bg-paper-100 border border-paper-300 px-3 py-2 flex-wrap">
+                        <Boxes className="w-4 h-4 text-ink-500 shrink-0" />
+                        <span className="text-[10px] uppercase tracking-wider text-ink-500 font-semibold">
+                          Resource group
+                        </span>
+                        <span className="text-sm text-ink-800 font-mono">
+                          {rgName}
+                        </span>
+                        {rgId && (
+                          <a
+                            href={`https://portal.azure.com/#@/resource${rgId}/overview`}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="text-[10px] font-mono text-ink-400 hover:text-accent-600 truncate max-w-full flex items-center gap-1"
+                            title="Open in Azure Portal"
+                          >
+                            {rgId}
+                            <ExternalLink className="w-3 h-3 shrink-0" />
+                          </a>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Azure Databricks cluster association */}
+                    {r.databricks_info && (
+                      <div className="rounded-lg bg-[#EB4C36]/5 border border-[#EB4C36]/20 px-3 py-2 space-y-1">
+                        <div className="flex items-center gap-2">
+                          <Database className="w-4 h-4 text-[#EB4C36] shrink-0" />
+                          <span className="text-[10px] uppercase tracking-wider text-[#EB4C36] font-semibold">
+                            Databricks cluster
+                          </span>
+                          <span className="text-sm text-ink-800 font-medium">
+                            {r.databricks_info.cluster_name || r.databricks_info.cluster_id}
+                          </span>
+                        </div>
+                        <div className="text-[11px] font-mono text-ink-500 flex flex-wrap gap-x-3 gap-y-0.5 pl-6">
+                          {r.databricks_info.workspace_name && (
+                            <span>workspace: {r.databricks_info.workspace_name}</span>
+                          )}
+                          {r.databricks_info.node_type_id && (
+                            <span>node: {r.databricks_info.node_type_id}</span>
+                          )}
+                          {r.databricks_info.num_workers != null && (
+                            <span>workers: {r.databricks_info.num_workers}</span>
+                          )}
+                          {r.databricks_info.spark_version && (
+                            <span>spark: {r.databricks_info.spark_version}</span>
+                          )}
+                          {r.databricks_info.autotermination_minutes != null && (
+                            <span>
+                              auto-term:{" "}
+                              {r.databricks_info.autotermination_minutes
+                                ? `${r.databricks_info.autotermination_minutes}m`
+                                : "none"}
+                            </span>
+                          )}
+                        </div>
                       </div>
                     )}
 

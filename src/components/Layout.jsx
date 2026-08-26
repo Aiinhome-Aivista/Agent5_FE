@@ -13,6 +13,7 @@ import {
   LogOut,
   Sun,
   Moon,
+  Database,
 } from "lucide-react";
 import clsx from "clsx";
 import { useState } from "react";
@@ -28,6 +29,7 @@ const NAV = [
   { to: "/recommendations", label: "Recommendations", icon: Lightbulb },
   { to: "/rulebook", label: "Rulebook", icon: BookOpen },
   { to: "/actions", label: "Actions", icon: PlayCircle },
+  // { to: "/databricks", label: "Databricks", icon: Database },
   { to: "/chat", label: "RAG Chat", icon: MessageSquare },
   { to: "/reports", label: "Reports", icon: FileText },
   { to: "/settings", label: "Settings", icon: Settings },

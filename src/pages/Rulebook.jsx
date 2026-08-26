@@ -10,6 +10,8 @@ import {
   CheckCircle2,
   Database,
   PlusCircle,
+  History,
+  Zap,
 } from "lucide-react";
 import clsx from "clsx";
 import { endpoints } from "../api/client";
@@ -20,6 +22,7 @@ import {
   EmptyState,
   Spinner,
   ProviderBadge,
+  fmtMoney,
 } from "../components/UI";
 import RunbookUploadModal from "../components/RunbookUploadModal";
 
@@ -94,7 +97,7 @@ function RuleEditor({ value, onChange }) {
 }
 
 export default function Rulebook() {
-  const { pushToast } = useAppStore();
+  const { pushToast, currency } = useAppStore();
   const [rules, setRules] = useState([]);
   const [vectorCounts, setVectorCounts] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -105,6 +108,24 @@ export default function Rulebook() {
   const [adding, setAdding] = useState(false);
   const [newRule, setNewRule] = useState(EMPTY_RULE);
   const [runbookOpen, setRunbookOpen] = useState(false);
+
+  // Execution history — rules auto-added to the Rule Book whenever a
+  // recommendation is successfully executed.
+  const [history, setHistory] = useState([]);
+  const [historyLoading, setHistoryLoading] = useState(true);
+  const [historyOpen, setHistoryOpen] = useState(true);
+
+  const loadHistory = async () => {
+    setHistoryLoading(true);
+    try {
+      const { data } = await endpoints.ruleHistory({});
+      setHistory(data.rules || []);
+    } catch {
+      setHistory([]);
+    } finally {
+      setHistoryLoading(false);
+    }
+  };
 
   const load = async () => {
     setLoading(true);
@@ -134,6 +155,10 @@ export default function Rulebook() {
     load();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [statusFilter]);
+
+  useEffect(() => {
+    loadHistory();
+  }, []);
 
   const approve = async (id) => {
     setBusy({ ...busy, [id]: "approve" });
@@ -218,6 +243,75 @@ export default function Rulebook() {
 
   return (
     <div className="space-y-6">
+      <Section
+        title="Execution History"
+        subtitle="Every successfully executed recommendation is automatically promoted into the Rule Book — this is that audit trail."
+        action={
+          <button
+            onClick={() => setHistoryOpen(!historyOpen)}
+            className="btn-ghost"
+          >
+            <History className="w-3.5 h-3.5" />
+            {historyOpen ? "Hide" : "Show"} ({history.length})
+          </button>
+        }
+      >
+        {historyOpen &&
+          (historyLoading ? (
+            <LoadingBlock label="Loading execution history…" />
+          ) : history.length === 0 ? (
+            <EmptyState
+              icon={History}
+              title="No executions yet"
+              description="Once a recommendation is approved and executed, it will automatically appear here as a rule."
+            />
+          ) : (
+            <div className="space-y-2">
+              {history.map((r) => (
+                <div
+                  key={r.id}
+                  className="card px-4 py-3 flex items-start justify-between gap-3 flex-wrap"
+                >
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <ProviderBadge provider={r.provider} />
+                      <span className="pill border bg-accent-100 text-emerald-800 border-accent-300">
+                        <Zap className="w-3 h-3" />
+                        executed
+                      </span>
+                      <span className="text-[10px] font-mono text-ink-400 uppercase tracking-wider">
+                        {r.action_type} · {r.resource_type}
+                      </span>
+                    </div>
+                    <div className="text-sm text-ink-900 font-medium mt-1.5">
+                      {r.title?.replace(/^\[Executed\]\s*/, "")}
+                    </div>
+                    {r.resource_group_name && (
+                      <div className="text-[11px] font-mono text-ink-400 mt-0.5">
+                        rg: {r.resource_group_name}
+                      </div>
+                    )}
+                    <div className="text-[11px] text-ink-400 mt-1">
+                      by {r.executed_by || "—"} ·{" "}
+                      {r.executed_at?.slice(0, 16)?.replace("T", " ")}
+                    </div>
+                  </div>
+                  {r.realized_savings_usd != null && (
+                    <div className="text-right whitespace-nowrap">
+                      <div className="text-accent-600 font-display text-base font-semibold tabular-nums">
+                        {fmtMoney(r.realized_savings_usd, currency)}
+                      </div>
+                      <div className="text-[10px] text-ink-400 uppercase tracking-wider">
+                        realized / mo
+                      </div>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          ))}
+      </Section>
+
       <Section title="Vector Knowledge Base">
         <div className="card p-5">
           <div className="grid grid-cols-3 gap-4">
