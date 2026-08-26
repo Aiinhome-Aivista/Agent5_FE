@@ -209,7 +209,7 @@ export default function Dashboard() {
       {/* Top tiles */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         <MetricCard
-          label="Spend (Last 7d)"
+          label="Spend(Last 7d)"
           value={fmt(overview?.total_spend_7d ?? overview?.total_spend_7d_usd)}
           sub="Across selected scope"
           accent
