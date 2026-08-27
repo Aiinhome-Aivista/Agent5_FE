@@ -107,6 +107,15 @@ export const endpoints = {
   testSavedAccount: (id) => api.post(`/accounts/${id}/test`),
   deleteAccount: (id) => api.delete(`/accounts/${id}`),
   toggleAccount: (id) => api.patch(`/accounts/${id}/toggle`),
+
+  // jira integration
+  getJiraConfig: () => api.get("/jira/config"),
+  saveJiraConfig: (data) => api.post("/jira/config", data),
+  testJiraConfig: (data) => api.post("/jira/test", data),
+  testSavedJiraConfig: (id) => api.post(`/jira/config/${id}/test`),
+  deleteJiraConfig: (id) => api.delete(`/jira/config/${id}`),
+  getJiraProjects: () => api.get("/jira/projects"),
+  raiseJiraTicket: (anomalyId) => api.post(`/jira/anomalies/${anomalyId}/ticket`),
 };
 
 export default api;

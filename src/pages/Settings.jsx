@@ -13,6 +13,9 @@ import {
   Sparkles,
   ChevronRight,
   Loader2,
+  Link2,
+  Unlink,
+  ExternalLink,
 } from "lucide-react";
 import clsx from "clsx";
 import { endpoints } from "../api/client";
@@ -65,19 +68,29 @@ export default function Settings() {
   const [testResult, setTestResult] = useState(null);
   const [saving, setSaving] = useState(false);
 
+  // Jira connector state
+  const [jiraConfig, setJiraConfig] = useState(null);
+  const [jiraForm, setJiraForm] = useState({ jira_url: "", email: "", api_token: "", project_key: "" });
+  const [showJiraForm, setShowJiraForm] = useState(false);
+  const [jiraTesting, setJiraTesting] = useState(false);
+  const [jiraTestResult, setJiraTestResult] = useState(null);
+  const [jiraSaving, setJiraSaving] = useState(false);
+
 
   // ----- load -----
   async function refresh() {
     setLoading(true);
     try {
-      const [a, s, h] = await Promise.all([
+      const [a, s, h, j] = await Promise.all([
         endpoints.accounts(),
         endpoints.settings(),
         endpoints.health(),
+        endpoints.getJiraConfig(),
       ]);
       setAccounts(a.data);
       setSettings(s.data);
       setHealth(h.data);
+      setJiraConfig(j.data?.configured ? j.data : null);
     } catch (e) {
       pushToast({
         type: "error",
@@ -198,6 +211,69 @@ export default function Settings() {
         azure.client_id &&
         azure.client_secret &&
         azure.subscription_id;
+
+  // Jira handlers
+  const jiraFormValid = jiraForm.jira_url && jiraForm.email && jiraForm.api_token;
+
+  async function handleJiraTest() {
+    setJiraTesting(true);
+    setJiraTestResult(null);
+    try {
+      const { data } = await endpoints.testJiraConfig(jiraForm);
+      setJiraTestResult(data);
+      pushToast({
+        type: data.ok ? "success" : "error",
+        message: data.ok ? `Connected as ${data.display_name}` : data.error,
+      });
+    } catch (e) {
+      setJiraTestResult({ ok: false, error: e.userMessage });
+      pushToast({ type: "error", message: e.userMessage });
+    } finally {
+      setJiraTesting(false);
+    }
+  }
+
+  async function handleJiraSave() {
+    setJiraSaving(true);
+    try {
+      await endpoints.saveJiraConfig(jiraForm);
+      pushToast({ type: "success", message: "Jira connector saved" });
+      setShowJiraForm(false);
+      setJiraForm({ jira_url: "", email: "", api_token: "", project_key: "" });
+      setJiraTestResult(null);
+      await refresh();
+    } catch (e) {
+      pushToast({ type: "error", message: e.userMessage });
+    } finally {
+      setJiraSaving(false);
+    }
+  }
+
+  async function handleJiraTestSaved() {
+    if (!jiraConfig?.id) return;
+    try {
+      const { data } = await endpoints.testSavedJiraConfig(jiraConfig.id);
+      pushToast({
+        type: data.ok ? "success" : "error",
+        message: data.ok ? `Connected as ${data.display_name}` : data.error,
+      });
+      await refresh();
+    } catch (e) {
+      pushToast({ type: "error", message: e.userMessage });
+    }
+  }
+
+  async function handleJiraDelete() {
+    if (!jiraConfig?.id) return;
+    if (!confirm("Remove Jira connector? Stored credentials will be erased.")) return;
+    try {
+      await endpoints.deleteJiraConfig(jiraConfig.id);
+      setJiraConfig(null);
+      pushToast({ type: "success", message: "Jira connector removed" });
+    } catch (e) {
+      pushToast({ type: "error", message: e.userMessage });
+    }
+  }
 
   if (loading) {
     return (
@@ -543,6 +619,249 @@ export default function Settings() {
           />
         </div>
       </Section> */}
+
+      {/* Moved Vector Knowledge Base and Operational Runbooks to Rulebook */}
+
+      {/* ---------- Integrations: Jira ---------- */}
+      <Section
+        title="Integrations"
+        action={
+          !jiraConfig && !showJiraForm && (
+            <button onClick={() => setShowJiraForm(true)} className="btn-primary">
+              <Link2 className="w-3.5 h-3.5" /> Connect Jira
+            </button>
+          )
+        }
+      >
+        {/* Connected Jira config row */}
+        {jiraConfig && (
+          <div className="card p-4 animate-fade-up">
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-start gap-3">
+                {/* Jira logo-style icon */}
+                <div className="w-9 h-9 rounded-lg bg-[#0052CC] flex items-center justify-center flex-shrink-0">
+                  <span className="text-white font-bold text-sm">J</span>
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="font-medium text-ink-900 text-sm">
+                      {jiraConfig.jira_url}
+                    </span>
+                    {jiraConfig.last_test_status === "ok" ? (
+                      <span className="pill bg-emerald-50 text-emerald-700 border-emerald-100">
+                        <Check className="w-3 h-3" /> connected
+                      </span>
+                    ) : jiraConfig.last_test_status === "error" ? (
+                      <span className="pill bg-crimson-50 text-crimson-700 border-crimson-100">
+                        <X className="w-3 h-3" /> failed
+                      </span>
+                    ) : (
+                      <span className="pill bg-paper-200 text-ink-500 border-paper-300">
+                        not tested
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-xs text-ink-500 font-mono mt-0.5">
+                    {jiraConfig.email_masked}
+                    {jiraConfig.project_key && (
+                      <span className="ml-2 text-ink-400">· project: {jiraConfig.project_key}</span>
+                    )}
+                  </div>
+                  {jiraConfig.last_test_message && (
+                    <div className="text-xs text-ink-400 mt-1">{jiraConfig.last_test_message}</div>
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 flex-shrink-0">
+                <a
+                  href={jiraConfig.jira_url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn-ghost py-1 px-2.5 text-xs"
+                  title="Open Jira"
+                >
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+                <button
+                  onClick={handleJiraTestSaved}
+                  className="btn-ghost py-1 px-2.5 text-xs"
+                  title="Test live connection"
+                >
+                  <Sparkles className="w-3 h-3" /> Test
+                </button>
+                <button
+                  onClick={() => {
+                    setJiraForm({
+                      jira_url: jiraConfig.jira_url,
+                      email: "",
+                      api_token: "",
+                      project_key: jiraConfig.project_key || "",
+                    });
+                    setShowJiraForm(true);
+                  }}
+                  className="btn-ghost py-1 px-2.5 text-xs"
+                  title="Edit credentials"
+                >
+                  <Settings2 className="w-3 h-3" /> Edit
+                </button>
+                <button
+                  onClick={handleJiraDelete}
+                  className="btn-ghost py-1 px-2 text-xs text-crimson-600 hover:bg-crimson-50"
+                  title="Remove connector"
+                >
+                  <Trash2 className="w-3 h-3" />
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Add / Edit Jira form */}
+        {showJiraForm && (
+          <div className="card p-5 mt-3 animate-fade-up">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-7 h-7 rounded-md bg-[#0052CC] flex items-center justify-center">
+                <span className="text-white font-bold text-xs">J</span>
+              </div>
+              <h3 className="font-display text-base font-semibold text-ink-900">
+                {jiraConfig ? "Update Jira Credentials" : "Connect Jira"}
+              </h3>
+            </div>
+
+            <div className="space-y-3">
+              <div>
+                <label className="label">Jira Instance URL</label>
+                <input
+                  className="input font-mono"
+                  placeholder="https://yourcompany.atlassian.net"
+                  value={jiraForm.jira_url}
+                  onChange={(e) => { setJiraForm({ ...jiraForm, jira_url: e.target.value }); setJiraTestResult(null); }}
+                />
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <label className="label">Email</label>
+                  <input
+                    className="input"
+                    placeholder="you@company.com"
+                    value={jiraForm.email}
+                    onChange={(e) => { setJiraForm({ ...jiraForm, email: e.target.value }); setJiraTestResult(null); }}
+                  />
+                </div>
+                <div>
+                  <label className="label">API Token</label>
+                  <input
+                    type="password"
+                    className="input font-mono"
+                    placeholder="••••••••"
+                    value={jiraForm.api_token}
+                    onChange={(e) => { setJiraForm({ ...jiraForm, api_token: e.target.value }); setJiraTestResult(null); }}
+                  />
+                </div>
+                <div>
+                  <label className="label">Default Project Key <span className="text-ink-400 font-normal">(optional)</span></label>
+                  <input
+                    className="input font-mono uppercase"
+                    placeholder="PLAT"
+                    value={jiraForm.project_key}
+                    onChange={(e) => setJiraForm({ ...jiraForm, project_key: e.target.value.toUpperCase() })}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Test result */}
+            {jiraTestResult && (
+              <div className={clsx(
+                "mt-4 rounded-lg p-3.5 text-sm border flex items-start gap-2.5 animate-fade-up",
+                jiraTestResult.ok
+                  ? "bg-emerald-50 border-emerald-100 text-emerald-700"
+                  : "bg-crimson-50 border-crimson-100 text-crimson-700",
+              )}>
+                {jiraTestResult.ok
+                  ? <Check className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                  : <AlertCircle className="w-4 h-4 mt-0.5 flex-shrink-0" />}
+                <div className="flex-1 min-w-0">
+                  {jiraTestResult.ok ? (
+                    <>
+                      <div className="font-semibold">Connection successful</div>
+                      <div className="text-xs mt-1 font-mono text-emerald-600">
+                        Logged in as: {jiraTestResult.display_name}
+                      </div>
+                      {jiraTestResult.projects && jiraTestResult.projects.length > 0 ? (
+                        <div className="mt-2 text-xs text-ink-700">
+                          <span className="font-semibold">Available Projects:</span>{" "}
+                          {jiraTestResult.projects.map((p) => (
+                            <button
+                              key={p.key}
+                              type="button"
+                              onClick={() => setJiraForm({ ...jiraForm, project_key: p.key })}
+                              className="ml-1.5 px-2 py-0.5 rounded bg-paper-200 hover:bg-paper-300 font-mono text-[11px] text-ink-800 border border-paper-300"
+                              title={`Set ${p.key} (${p.name}) as default project key`}
+                            >
+                              {p.key} ({p.name})
+                            </button>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="mt-2 text-xs bg-gold-50 border border-gold-200 text-gold-800 rounded p-2">
+                          <strong>Notice:</strong> No projects found in your Jira account yet. Please create a project (e.g. Scrum or Kanban) in your Jira workspace (<a href={`${jiraForm.jira_url.replace(/\/$/, '')}/jira/projects`} target="_blank" rel="noreferrer" className="underline font-semibold">Create Project ↗</a>) and enter its Key above.
+                        </div>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      <div className="font-semibold">Connection failed</div>
+                      <div className="text-xs mt-1 font-mono text-crimson-600">{jiraTestResult.error}</div>
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
+
+            <div className="flex items-center gap-2 mt-5 pt-4 border-t border-paper-300">
+              <button
+                onClick={handleJiraTest}
+                disabled={!jiraFormValid || jiraTesting}
+                className="btn-ghost"
+              >
+                {jiraTesting ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
+                {jiraTesting ? "Testing…" : "Test connection"}
+              </button>
+              <button
+                onClick={handleJiraSave}
+                disabled={!jiraFormValid || jiraSaving || !jiraTestResult?.ok}
+                className="btn-primary"
+                title={!jiraTestResult?.ok ? "Test connection first" : "Save"}
+              >
+                {jiraSaving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
+                {jiraSaving ? "Saving…" : "Save connector"}
+              </button>
+              <button onClick={() => { setShowJiraForm(false); setJiraTestResult(null); }} className="btn-ghost text-ink-500">
+                Cancel
+              </button>
+              <div className="ml-auto text-xs text-ink-400">
+                {!jiraTestResult?.ok && jiraFormValid && "Test connection before saving →"}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {!jiraConfig && !showJiraForm && (
+          <div className="card p-6 flex flex-col items-center gap-3 text-center">
+            <div className="w-12 h-12 rounded-xl bg-[#0052CC]/10 flex items-center justify-center">
+              <span className="text-[#0052CC] font-bold text-xl">J</span>
+            </div>
+            <div>
+              <div className="font-medium text-ink-900 text-sm">No Jira connector configured</div>
+              <div className="text-xs text-ink-400 mt-1">Connect Jira to create tickets from recommendations automatically.</div>
+            </div>
+            <button onClick={() => setShowJiraForm(true)} className="btn-primary mt-1">
+              <Link2 className="w-3.5 h-3.5" /> Connect Jira
+            </button>
+          </div>
+        )}
+      </Section>
 
       {/* Moved Vector Knowledge Base and Operational Runbooks to Rulebook */}
 
