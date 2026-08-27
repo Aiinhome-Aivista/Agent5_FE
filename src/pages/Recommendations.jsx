@@ -12,6 +12,7 @@ import {
   Boxes,
   Database,
   ExternalLink,
+  Code,
 } from "lucide-react";
 import { endpoints } from "../api/client";
 import { useAppStore } from "../store/store";
@@ -37,6 +38,7 @@ export default function Recommendations() {
   const [statusFilter, setStatusFilter] = useState("pending");
   const [expanded, setExpanded] = useState({});
   const [busy, setBusy] = useState({});
+  const [terraformCode, setTerraformCode] = useState({});
   const [summary, setSummary] = useState(null);
   const [summaryLoading, setSummaryLoading] = useState(true);
 
@@ -110,6 +112,19 @@ export default function Recommendations() {
       loadSummary();
     } catch (e) {
       pushToast({ type: "error", message: e.userMessage || "Execute failed" });
+    } finally {
+      setBusy({ ...busy, [id]: null });
+    }
+  };
+
+  const handleGenerateTerraform = async (id) => {
+    setBusy({ ...busy, [id]: "terraform" });
+    try {
+      const { data } = await endpoints.generateTerraform(id);
+      setTerraformCode((prev) => ({ ...prev, [id]: data.terraform_code }));
+      pushToast({ type: "success", message: "Terraform code generated" });
+    } catch (e) {
+      pushToast({ type: "error", message: e.userMessage || "Generation failed" });
     } finally {
       setBusy({ ...busy, [id]: null });
     }
@@ -346,6 +361,17 @@ export default function Recommendations() {
                       </details>
                     )}
 
+                    {terraformCode[r.id] && (
+                      <div className="bg-[#1e1e1e] rounded-lg p-3 text-xs shadow-inner">
+                        <div className="text-ink-300 font-mono mb-2 border-b border-gray-700 pb-2">
+                          Generated Terraform Code
+                        </div>
+                        <pre className="text-[#a6e22e] font-mono overflow-x-auto whitespace-pre-wrap">
+                          {terraformCode[r.id]}
+                        </pre>
+                      </div>
+                    )}
+
                     {/* Action buttons */}
                     <div className="flex gap-2 flex-wrap pt-1">
                       {r.status === "pending" && (
@@ -399,6 +425,19 @@ export default function Recommendations() {
                       >
                         <PlayCircle className="w-3.5 h-3.5" />
                         Try Run
+                      </button>
+                      <button
+                        onClick={() => handleGenerateTerraform(r.id)}
+                        disabled={!!busy[r.id]}
+                        className="btn-ghost"
+                        title="Generate Terraform code to apply this recommendation"
+                      >
+                        {busy[r.id] === "terraform" ? (
+                          <Spinner />
+                        ) : (
+                          <Code className="w-3.5 h-3.5" />
+                        )}
+                        Generate Terraform Code
                       </button>
                     </div>
                   </div>

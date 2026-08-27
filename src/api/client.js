@@ -46,6 +46,7 @@ export const endpoints = {
     api.post(`/recommendations/${id}/execute`, null, {
       params: { actor, force_dry_run: dry_run },
     }),
+  generateTerraform: (id) => api.post(`/recommendations/${id}/terraform`),
 
   // rules (dynamic rulebook)
   rules: (params) => api.get("/rules", { params }),
