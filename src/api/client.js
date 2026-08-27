@@ -26,7 +26,7 @@ export const endpoints = {
 
   login: (data) => api.post("/auth/login", data),
   // dashboard / telemetry
-  dashboard: () => api.get("/telemetry/dashboard/overview"),
+  dashboard: (params) => api.get("/telemetry/dashboard/overview", { params }),
   telemetry: (params) => api.get("/telemetry/snapshots", { params }),
   costSummary: (params) => api.get("/telemetry/cost/summary", { params }),
   cost: (params) => api.get("/telemetry/cost", { params }),
