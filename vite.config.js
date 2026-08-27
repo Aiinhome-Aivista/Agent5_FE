@@ -9,6 +9,7 @@ export default defineConfig({
     proxy: {
       "/api": {
         target: process.env.VITE_API_URL || "http://187.127.163.17:3026",
+        // target: process.env.VITE_API_URL || "http://localhost:3004",
         changeOrigin: true,
       },
     },

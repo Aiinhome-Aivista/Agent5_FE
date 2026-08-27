@@ -26,7 +26,7 @@ export const endpoints = {
 
   login: (data) => api.post("/auth/login", data),
   // dashboard / telemetry
-  dashboard: () => api.get("/telemetry/dashboard/overview"),
+  dashboard: (params) => api.get("/telemetry/dashboard/overview", { params }),
   telemetry: (params) => api.get("/telemetry/snapshots", { params }),
   costSummary: (params) => api.get("/telemetry/cost/summary", { params }),
   cost: (params) => api.get("/telemetry/cost", { params }),
@@ -46,6 +46,7 @@ export const endpoints = {
     api.post(`/recommendations/${id}/execute`, null, {
       params: { actor, force_dry_run: dry_run },
     }),
+  generateTerraform: (id) => api.post(`/recommendations/${id}/terraform`),
 
   // rules (dynamic rulebook)
   rules: (params) => api.get("/rules", { params }),
@@ -106,6 +107,15 @@ export const endpoints = {
   testSavedAccount: (id) => api.post(`/accounts/${id}/test`),
   deleteAccount: (id) => api.delete(`/accounts/${id}`),
   toggleAccount: (id) => api.patch(`/accounts/${id}/toggle`),
+
+  // jira integration
+  getJiraConfig: () => api.get("/jira/config"),
+  saveJiraConfig: (data) => api.post("/jira/config", data),
+  testJiraConfig: (data) => api.post("/jira/test", data),
+  testSavedJiraConfig: (id) => api.post(`/jira/config/${id}/test`),
+  deleteJiraConfig: (id) => api.delete(`/jira/config/${id}`),
+  getJiraProjects: () => api.get("/jira/projects"),
+  raiseJiraTicket: (anomalyId) => api.post(`/jira/anomalies/${anomalyId}/ticket`),
 };
 
 export default api;

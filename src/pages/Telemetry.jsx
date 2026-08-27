@@ -9,14 +9,15 @@ import {
   EmptyState,
   fmtPct,
 } from "../components/UI";
-import { Activity, AlertTriangle } from "lucide-react";
+import { Activity, AlertTriangle, ExternalLink, Loader2 } from "lucide-react";
 
 export default function Telemetry() {
-  const { provider, accountId } = useAppStore();
+  const { provider, accountId, pushToast } = useAppStore();
   const [snapshots, setSnapshots] = useState([]);
   const [anomalies, setAnomalies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState("anomalies");
+  const [raisingTicket, setRaisingTicket] = useState({});
 
   useEffect(() => {
     let mounted = true;
@@ -39,6 +40,35 @@ export default function Telemetry() {
       mounted = false;
     };
   }, [provider, accountId]);
+
+  const handleRaiseTicket = async (anomalyId) => {
+    setRaisingTicket((prev) => ({ ...prev, [anomalyId]: true }));
+    try {
+      const { data } = await endpoints.raiseJiraTicket(anomalyId);
+      if (data.ok) {
+        pushToast({
+          type: "success",
+          message: data.already_raised
+            ? `Ticket already raised: ${data.issue_key}`
+            : `Ticket created in Jira: ${data.issue_key}`,
+        });
+        setAnomalies((prev) =>
+          prev.map((a) =>
+            a.id === anomalyId
+              ? { ...a, jira_issue_key: data.issue_key, jira_issue_url: data.issue_url }
+              : a
+          )
+        );
+      }
+    } catch (e) {
+      pushToast({
+        type: "error",
+        message: e.userMessage || "Failed to raise Jira ticket",
+      });
+    } finally {
+      setRaisingTicket((prev) => ({ ...prev, [anomalyId]: false }));
+    }
+  };
 
   if (loading) return <LoadingBlock label="Loading telemetry…" />;
 
@@ -97,10 +127,10 @@ export default function Telemetry() {
               {anomalies.map((a) => (
                 <div
                   key={a.id}
-                  className="px-4 py-3 border-b border-paper-300 last:border-0 hover:bg-paper-100"
+                  className="px-4 py-3 border-b border-paper-300 last:border-0 hover:bg-paper-100 transition-colors"
                 >
-                  <div className="flex items-center justify-between gap-3">
-                    <div className="flex items-center gap-2 min-w-0">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-2 min-w-0 flex-wrap">
                       <SeverityPill severity={a.severity} />
                       <ProviderBadge provider={a.provider} />
                       <span className="text-xs font-mono text-ink-400">
@@ -112,8 +142,41 @@ export default function Telemetry() {
                         </span>
                       )}
                     </div>
-                    <div className="text-[11px] text-ink-400 font-mono whitespace-nowrap">
-                      {a.detected_at?.slice(0, 16)}
+                    <div className="flex items-center gap-3 flex-shrink-0">
+                      {a.jira_issue_key ? (
+                        <a
+                          href={a.jira_issue_url}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-mono font-medium bg-[#0052CC]/10 text-[#0052CC] hover:bg-[#0052CC]/20 transition-colors border border-[#0052CC]/30"
+                          title="Open ticket in Jira"
+                        >
+                          <span className="w-3.5 h-3.5 rounded bg-[#0052CC] text-white flex items-center justify-center text-[9px] font-bold">
+                            J
+                          </span>
+                          {a.jira_issue_key}
+                          <ExternalLink size={12} className="opacity-70" />
+                        </a>
+                      ) : (
+                        <button
+                          onClick={() => handleRaiseTicket(a.id)}
+                          disabled={!!raisingTicket[a.id]}
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-paper-100 hover:bg-paper-200 text-ink-700 hover:text-ink-900 border border-paper-300 transition-colors disabled:opacity-50"
+                          title="Raise a ticket in Jira for this anomaly"
+                        >
+                          {raisingTicket[a.id] ? (
+                            <Loader2 size={12} className="animate-spin text-ink-500" />
+                          ) : (
+                            <span className="w-3.5 h-3.5 rounded bg-[#0052CC] text-white flex items-center justify-center text-[9px] font-bold">
+                              J
+                            </span>
+                          )}
+                          {raisingTicket[a.id] ? "Creating Ticket…" : "Raise Ticket"}
+                        </button>
+                      )}
+                      <div className="text-[11px] text-ink-400 font-mono whitespace-nowrap">
+                        {a.detected_at?.slice(0, 16)}
+                      </div>
                     </div>
                   </div>
                   <div className="text-sm text-ink-700 mt-2">

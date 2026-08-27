@@ -12,6 +12,7 @@ import {
   Boxes,
   Database,
   ExternalLink,
+  Code,
 } from "lucide-react";
 import { endpoints } from "../api/client";
 import { useAppStore } from "../store/store";
@@ -37,6 +38,7 @@ export default function Recommendations() {
   const [statusFilter, setStatusFilter] = useState("pending");
   const [expanded, setExpanded] = useState({});
   const [busy, setBusy] = useState({});
+  const [terraformCode, setTerraformCode] = useState({});
   const [summary, setSummary] = useState(null);
   const [summaryLoading, setSummaryLoading] = useState(true);
 
@@ -64,6 +66,12 @@ export default function Recommendations() {
     try {
       const { data } = await endpoints.recommendations(params);
       setItems(data);
+      // Pre-populate terraform code from DB (already generated ones)
+      const preloaded = {};
+      data.forEach((rec) => {
+        if (rec.terraform_code) preloaded[rec.id] = rec.terraform_code;
+      });
+      setTerraformCode((prev) => ({ ...prev, ...preloaded }));
     } catch (e) {
       pushToast({ type: "error", message: e.userMessage || "Failed to load" });
     } finally {
@@ -110,6 +118,22 @@ export default function Recommendations() {
       loadSummary();
     } catch (e) {
       pushToast({ type: "error", message: e.userMessage || "Execute failed" });
+    } finally {
+      setBusy({ ...busy, [id]: null });
+    }
+  };
+
+  const handleGenerateTerraform = async (id) => {
+    setBusy({ ...busy, [id]: "terraform" });
+    try {
+      const { data } = await endpoints.generateTerraform(id);
+      setTerraformCode((prev) => ({ ...prev, [id]: data.terraform_code }));
+      pushToast({
+        type: "success",
+        message: data.cached ? "Showing previously generated code" : "Terraform code generated & saved",
+      });
+    } catch (e) {
+      pushToast({ type: "error", message: e.userMessage || "Generation failed" });
     } finally {
       setBusy({ ...busy, [id]: null });
     }
@@ -346,6 +370,17 @@ export default function Recommendations() {
                       </details>
                     )}
 
+                    {terraformCode[r.id] && (
+                      <div className="bg-[#1e1e1e] rounded-lg p-3 text-xs shadow-inner">
+                        <div className="text-ink-300 font-mono mb-2 border-b border-gray-700 pb-2">
+                          Generated Terraform Code
+                        </div>
+                        <pre className="text-[#a6e22e] font-mono overflow-x-auto whitespace-pre-wrap">
+                          {terraformCode[r.id]}
+                        </pre>
+                      </div>
+                    )}
+
                     {/* Action buttons */}
                     <div className="flex gap-2 flex-wrap pt-1">
                       {r.status === "pending" && (
@@ -399,6 +434,28 @@ export default function Recommendations() {
                       >
                         <PlayCircle className="w-3.5 h-3.5" />
                         Try Run
+                      </button>
+                      <button
+                        onClick={() => handleGenerateTerraform(r.id)}
+                        disabled={!!busy[r.id] || !!terraformCode[r.id]}
+                        className={clsx(
+                          "btn-ghost",
+                          terraformCode[r.id] && "opacity-60 cursor-not-allowed"
+                        )}
+                        title={
+                          terraformCode[r.id]
+                            ? "Terraform code already generated"
+                            : "Generate Terraform code to apply this recommendation"
+                        }
+                      >
+                        {busy[r.id] === "terraform" ? (
+                          <Spinner />
+                        ) : terraformCode[r.id] ? (
+                          <CheckCircle2 className="w-3.5 h-3.5 text-green-500" />
+                        ) : (
+                          <Code className="w-3.5 h-3.5" />
+                        )}
+                        {terraformCode[r.id] ? "Code Generated" : "Generate Terraform Code"}
                       </button>
                     </div>
                   </div>
