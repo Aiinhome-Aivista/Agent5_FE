@@ -81,7 +81,7 @@ export default function Dashboard() {
     if (accountId) params.account_id = accountId;
 
     Promise.all([
-      endpoints.dashboard().catch(() => ({ data: null })),
+      endpoints.dashboard(params).catch(() => ({ data: null })),
       endpoints
         .costSummary({ ...params, days: 30 })
         .catch(() => ({ data: null })),
