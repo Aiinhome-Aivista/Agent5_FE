@@ -359,14 +359,14 @@ export default function Recommendations() {
                       </div>
                     )}
 
-                    {r.payload && Object.keys(r.payload || {}).length > 0 && (
+                    {r.payload && r.payload.action && (
                       <details className="bg-paper-100 rounded-lg p-3 text-xs">
                         <summary className="cursor-pointer text-ink-500 hover:text-ink-800 font-mono">
-                          Payload
+                          Action
                         </summary>
-                        <pre className="mt-2 text-ink-500 font-mono overflow-x-auto">
-                          {JSON.stringify(r.payload, null, 2)}
-                        </pre>
+                        <div className="mt-2 text-ink-800 font-mono capitalize">
+                          {r.payload.action}
+                        </div>
                       </details>
                     )}
 
