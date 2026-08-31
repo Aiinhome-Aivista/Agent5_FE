@@ -33,6 +33,7 @@ import {
   ProviderBadge,
   SeverityPill,
 } from "../components/UI";
+import ResourceListModal from "../components/ResourceListModal";
 
 const PIE_COLORS = [
   "#FF5A14", // Primary Orange
@@ -71,7 +72,9 @@ export default function Dashboard() {
   const [overview, setOverview] = useState(null);
   const [costData, setCostData] = useState(null);
   const [anomalies, setAnomalies] = useState([]);
+  const [resources, setResources] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isResourceModalOpen, setIsResourceModalOpen] = useState(false);
 
   useEffect(() => {
     let mounted = true;
@@ -88,13 +91,16 @@ export default function Dashboard() {
       endpoints
         .anomalies({ ...params, limit: 5, status: "open" })
         .catch(() => ({ data: [] })),
+      provider !== "all"
+        ? endpoints.telemetry({ ...params, limit: 1000 }).catch(() => ({ data: [] }))
+        : Promise.resolve({ data: [] }),
     ])
-      .then(([o, c, a]) => {
+      .then(([o, c, a, r]) => {
         if (!mounted) return;
-        console.log("overview", o.data);
         setOverview(o.data);
         setCostData(c.data);
         setAnomalies(a.data || []);
+        setResources(r.data || []);
         // Detect currency from backend and broadcast to the rest of the app
         const detected = c.data?.currency || o.data?.currency;
         if (detected) setCurrency(detected);
@@ -136,6 +142,40 @@ export default function Dashboard() {
     { name: "Current", value: current30d, fill: "var(--color-light-border)" },
     { name: "Projected", value: projected30d, fill: "#FF7A45" },
   ];
+
+  // Group resources for the dropdown
+  const getResourceGroup = (res) => {
+    if (res.resource_type === "databricks_cluster" && res.extra_metrics?.workspace_name) {
+      return `Workspace: ${res.extra_metrics.workspace_name}`;
+    }
+    if (res.provider === "azure" && res.resource_id) {
+      const parts = res.resource_id.split("/");
+      const rgIndex = parts.findIndex((p) => p.toLowerCase() === "resourcegroups");
+      if (rgIndex !== -1 && parts[rgIndex + 1]) {
+        return parts[rgIndex + 1];
+      }
+    }
+    if (res.provider === "aws") {
+      return res.region || "Global";
+    }
+    return "Default Group";
+  };
+
+  const groupedResources = resources.reduce((acc, res) => {
+    const group = getResourceGroup(res);
+    if (!acc[group]) acc[group] = [];
+    // Use resource_name if available, else fallback to resource_id
+    const displayName = res.resource_name || res.resource_id.split("/").pop() || "Unknown";
+    // Avoid exact duplicates (since it's telemetry snapshots, there might be multiple per resource)
+    if (!acc[group].some(r => r.id === res.resource_id)) {
+      acc[group].push({ 
+        id: res.resource_id, 
+        name: displayName,
+        type: res.resource_type || "Resource"
+      });
+    }
+    return acc;
+  }, {});
 
   return (
     <div className="space-y-6">
@@ -241,7 +281,16 @@ export default function Dashboard() {
           value={fmtNum(overview?.resources_monitored)}
           sub="Across selected scope"
           icon={Server}
-        />
+        >
+          {provider !== "all" && resources.length > 0 && (
+            <button
+              onClick={() => setIsResourceModalOpen(true)}
+              className="w-full mt-1 bg-[var(--color-input-bg)] border border-[var(--color-light-border)] hover:border-[#FF5A14] text-[var(--color-primary-text)] hover:text-[#FF5A14] transition-colors text-xs rounded p-1.5 font-medium"
+            >
+              View All Resources
+            </button>
+          )}
+        </MetricCard>
       </div>
 
       {/* Charts */}
@@ -376,6 +425,12 @@ export default function Dashboard() {
           </div>
         )}
       </Section>
+
+      <ResourceListModal 
+        open={isResourceModalOpen} 
+        onClose={() => setIsResourceModalOpen(false)} 
+        groupedResources={groupedResources} 
+      />
     </div>
   );
 }

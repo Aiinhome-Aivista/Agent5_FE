@@ -94,11 +94,11 @@ export function ProviderBadge({ provider }) {
   );
 }
 
-export function MetricCard({ label, value, sub, accent = false, icon: Icon }) {
+export function MetricCard({ label, value, sub, accent = false, icon: Icon, children }) {
   return (
     <div
       className={clsx(
-        "card p-5 relative overflow-hidden card-hover",
+        "card p-5 relative overflow-visible card-hover",
         accent && "shadow-sm",
       )}
     >
@@ -108,6 +108,7 @@ export function MetricCard({ label, value, sub, accent = false, icon: Icon }) {
       </div>
       <div className="stat-num mt-2">{value}</div>
       {sub && <div className="text-xs text-[var(--color-secondary-text)] mt-1.5">{sub}</div>}
+      {children && <div className="mt-3 relative z-10">{children}</div>}
       {accent && (
         <div className="absolute -right-12 -bottom-12 w-32 h-32 bg-[#FF5A14]/10 blur-3xl rounded-full pointer-events-none" />
       )}
